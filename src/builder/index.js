@@ -11,10 +11,10 @@ import tickerBuilder from './tickers'
 const { log, error } = console
 
 const RestBuilder = function() {
-  const productData = { fn: productBuilder, cron: '0 0 0 * * *' }
-  const tradeData = { fn: tradeBuilder, cron: '0 0 */3 * * *' }
-  const klineData = { fn: kLineBuilder, cron: '0 0 */6 * * *', args: { period: 60 } }
-  const tickerData = { fn: tickerBuilder, cron: '0 */3 * * * *' }
+  const productData = { fn: productBuilder, cron: '0 0 9 * * *' }
+  const tradeData = { fn: tradeBuilder, cron: '0 15 */3 * * *' }
+  const klineData = { fn: kLineBuilder, cron: '0 45 */6 * * *', args: { period: 60 } }
+  const tickerData = { fn: tickerBuilder, cron: '30 */10 * * * *' }
   const builders = [productData, tradeData, klineData, tickerData]
   const clientExchanges = [
     { client: kucoinClient.initialize(), name: 'kucoin', label: 'Kucoin' },
