@@ -1,0 +1,43 @@
+{
+  "name": "cryptodock-remote",
+  "version": "0.0.1",
+  "description": "Server based data builder and API for CryptoDock, lives on the cloud.",
+  "main": "dist/index.js",
+  "bin": {
+    "cremote": "bin/index.js"
+  },
+  "scripts": {
+    "build:prod": "webpack --config webpack.config.prod.js --experimental-worker",
+    "build": "webpack --config webpack.config.js --experimental-worker"
+  },
+  "author": "Daniel Griffiths",
+  "license": "ISC",
+  "dependencies": {
+    "@babel/runtime": "^7.7.7",
+    "body-parser": "^1.19.0",
+    "chalk": "^3.0.0",
+    "coinbase-pro": "^0.9.0",
+    "commander": "^4.1.0",
+    "dotenv": "^8.2.0",
+    "express": "^4.17.1",
+    "express-ws": "^4.0.0",
+    "inquirer": "^7.0.2",
+    "moment": "^2.24.0",
+    "node-schedule": "^1.3.2",
+    "smart-request-balancer": "^2.0.0"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.7.7",
+    "@babel/core": "^7.7.7",
+    "@babel/plugin-proposal-class-properties": "^7.7.4",
+    "@babel/plugin-transform-runtime": "^7.7.6",
+    "@babel/preset-env": "^7.7.7",
+    "babel-loader": "^8.0.6",
+    "nodemon": "^2.0.2",
+    "serialize-javascript": "^2.1.2",
+    "uglifyjs-webpack-plugin": "^2.2.0",
+    "webpack": "^4.41.5",
+    "webpack-cli": "^3.3.10",
+    "webpack-shell-plugin": "^0.5.0"
+  }
+}
