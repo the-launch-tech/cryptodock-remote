@@ -8,7 +8,7 @@ const { log, error } = console
 
 export default function(exchangeId, exchangeName, Client) {
   log(
-    'Ticker Builder for ' + exchangeName + ' | Started:',
+    '\n Ticker Builder for ' + exchangeName + ' | Started:',
     moment()
       .local()
       .format('YYYY-MM-DD HH:mm:ss.SSS')
@@ -80,7 +80,7 @@ export default function(exchangeId, exchangeName, Client) {
         moment()
           .local()
           .format('YYYY-MM-DD HH:mm:ss.SSS'),
-        ' Start ID: ' + dataIds[0] + ' - End ID: ' + dataIds[dataIds.length - 1]
+        ' Start ID: ' + dataIds[0] + ' - End ID: ' + dataIds[dataIds.length - 1] + '\n'
       )
     })
     .catch(error)

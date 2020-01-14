@@ -13,7 +13,7 @@ Date.prototype.addHours = function(h) {
 
 export default function(exchangeId, exchangeName, Client) {
   log(
-    'Kline Builder for ' + exchangeName + ' | Started:',
+    '\n Kline Builder for ' + exchangeName + ' | Started:',
     moment()
       .local()
       .format('YYYY-MM-DD HH:mm:ss.SSS')
@@ -141,7 +141,7 @@ export default function(exchangeId, exchangeName, Client) {
         moment()
           .local()
           .format('YYYY-MM-DD HH:mm:ss.SSS'),
-        ' Start ID: ' + ids[0] + ' - End ID: ' + ids[ids.length - 1]
+        ' Start ID: ' + ids[0] + ' - End ID: ' + ids[ids.length - 1] + '\n'
       )
     })
     .catch(error)

@@ -6,7 +6,7 @@ const { log, error } = console
 
 export default function(exchangeId, exchangeName, Client, callback) {
   log(
-    'Product Builder',
+    '\n Product Builder',
     moment()
       .local()
       .format('YYYY-MM-DD HH:mm:ss.SSS')
@@ -69,7 +69,7 @@ export default function(exchangeId, exchangeName, Client, callback) {
                   moment()
                     .local()
                     .format('YYYY-MM-DD HH:mm:ss.SSS'),
-                  ' Start ID: ' + dataIds[0] + ' - End ID: ' + dataIds[dataIds.length - 1]
+                  ' Start ID: ' + dataIds[0] + ' - End ID: ' + dataIds[dataIds.length - 1] + '\n'
                 )
                 if (typeof callback === 'function') {
                   callback()
