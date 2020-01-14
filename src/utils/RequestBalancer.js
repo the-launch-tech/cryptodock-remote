@@ -1,4 +1,4 @@
-const Queue = require('smart-request-balancer')
+import Queue from 'smart-request-balancer'
 
 const RequestBalancer = new Queue({
   rules: {
@@ -9,7 +9,7 @@ const RequestBalancer = new Queue({
     },
     kucoin: {
       rate: 1,
-      limit: 0.15,
+      limit: 0.1,
       priority: 1,
     },
     binance: {
@@ -25,4 +25,4 @@ const RequestBalancer = new Queue({
   },
 })
 
-module.exports = RequestBalancer
+export default RequestBalancer

@@ -30,7 +30,10 @@ module.exports = {
       side: 'side',
       best_match: 'best_match',
     },
-    getTradesTimeFn: server_time => moment(server_time).format('YYYY-MM-DD HH:mm:ss.SSS'),
+    getTradesTimeFn: server_time =>
+      moment(server_time)
+        .local()
+        .format('YYYY-MM-DD HH:mm:ss.SSS'),
     tickerObject: {
       sequence: 'trade_id',
       server_time: 'time',
@@ -42,7 +45,10 @@ module.exports = {
       best_bid_size: 'bestBidSize',
       best_ask_size: 'bestAskSize',
     },
-    tickersTimeFn: server_time => moment(server_time).format('YYYY-MM-DD HH:mm:ss.SSS'),
+    tickersTimeFn: server_time =>
+      moment(server_time)
+        .local()
+        .format('YYYY-MM-DD HH:mm:ss.SSS'),
     maxCandles: 300,
   },
   kucoin: {
@@ -77,7 +83,9 @@ module.exports = {
       best_match: 'best_match',
     },
     getTradesTimeFn: server_time =>
-      moment(parseInt(server_time.toString().substr(0, 13), 10)).format('YYYY-MM-DD HH:mm:ss.SSS'),
+      moment(parseInt(server_time.toString().substr(0, 13), 10))
+        .local()
+        .format('YYYY-MM-DD HH:mm:ss.SSS'),
     tickerObject: {
       sequence: 'sequence',
       server_time: 'time',
@@ -90,7 +98,9 @@ module.exports = {
       best_ask_size: 'bestAskSize',
     },
     tickersTimeFn: server_time =>
-      moment(parseInt(server_time.toString().substr(0, 13), 10)).format('YYYY-MM-DD HH:mm:ss.SSS'),
+      moment(parseInt(server_time.toString().substr(0, 13), 10))
+        .local()
+        .format('YYYY-MM-DD HH:mm:ss.SSS'),
     maxCandles: 1500,
   },
 }

@@ -1,3 +1,4 @@
+import moment from 'moment'
 import Ticker from '../models/Ticker'
 import RequestBalancer from '../utils/RequestBalancer'
 import Product from '../models/Product'
@@ -5,13 +6,19 @@ import exchangeMap from '../utils/exchangeMap'
 
 const { log, error } = console
 
-module.exports = function(exchangeId, exchangeName, Client) {
-  log('In Ticker Builder')
+export default function(exchangeId, exchangeName, Client) {
+  log(
+    'Ticker Builder for ' + exchangeName + ' | Started:',
+    moment()
+      .local()
+      .format('YYYY-MM-DD HH:mm:ss.SSS')
+  )
+
   const map = exchangeMap[exchangeName]
   const tickerObject = map.tickerObject
   const tickersTimeFn = map.tickersTimeFn
 
-  const getTicker = pair => {
+  function getTicker(pair) {
     return new Promise((resolve, reject) => {
       if (exchangeName === 'coinbasepro') {
         Client.getProductTicker(pair)
@@ -25,26 +32,56 @@ module.exports = function(exchangeId, exchangeName, Client) {
     })
   }
 
-  Product.getExchangeProducts(exchangeId)
-    .then(products => {
-      products.map(({ id, pair }) => {
-        Ticker.getLastSequence(id, exchangeId)
-          .then(lastSequence => {
-            RequestBalancer.request(
-              retry =>
-                getTicker(pair)
-                  .then(ticker => {
-                    if (ticker[tickerObject['sequence']] > lastSequence) {
-                      Ticker.save(ticker, id, exchangeId, tickerObject, tickersTimeFn)
-                    }
-                  })
-                  .catch(error),
-              exchangeName,
-              exchangeName
-            ).catch(error)
-          })
-          .catch(error)
+  function getLastSequences(products) {
+    return products.map(({ id, pair }) => {
+      return Ticker.getLastSequence(id, exchangeId)
+        .then(lastSequence => {
+          return { id, pair, lastSequence }
+        })
+        .catch(error)
+    })
+  }
+
+  function getProductTickers(products) {
+    return products.map(product => {
+      return global.RequestBalancer.request(
+        retry => {
+          return getTicker(product.pair)
+            .then(ticker => {
+              return { ticker, id: product.id, lastSequence: product.lastSequence }
+            })
+            .catch(error)
+        },
+        exchangeName,
+        exchangeName
+      )
+    })
+  }
+
+  function getSavedIds(products) {
+    return products
+      .map(product => {
+        if (product.ticker[tickerObject['sequence']] > product.lastSequence) {
+          return Ticker.save(product.ticker, product.id, exchangeId, tickerObject, tickersTimeFn)
+            .then(data => data.insertId)
+            .catch(error)
+        }
       })
+      .filter(Boolean)
+  }
+
+  Product.getExchangeProducts(exchangeId)
+    .then(async products => await Promise.all(getLastSequences(products)))
+    .then(async products => await Promise.all(getProductTickers(products)))
+    .then(async products => await Promise.all(getSavedIds(products)))
+    .then(dataIds => {
+      log(
+        'Ticker Builder for ' + exchangeName + ' | Ended:',
+        moment()
+          .local()
+          .format('YYYY-MM-DD HH:mm:ss.SSS'),
+        ' Start ID: ' + dataIds[0] + ' - End ID: ' + dataIds[dataIds.length - 1]
+      )
     })
     .catch(error)
 }

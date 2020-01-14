@@ -153,7 +153,7 @@ class KLine extends Model {
         [productId, exchangeId],
         (err, data) => {
           if (err) reject(err)
-          resolve(data && data[0] ? data[0]['server_time'] : moment().subtract({ hours: 24 }))
+          resolve(data && data[0] ? data[0]['server_time'] : moment().subtract({ hours: 10 }))
         }
       )
     })

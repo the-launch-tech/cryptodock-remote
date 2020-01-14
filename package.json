@@ -7,8 +7,8 @@
     "cremote": "bin/index.js"
   },
   "scripts": {
-    "build:prod": "webpack --config webpack.config.prod.js --experimental-worker",
-    "build": "webpack --config webpack.config.js --experimental-worker"
+    "build:prod": "webpack --config webpack.config.prod.js --max-old-space-size=8000",
+    "build": "webpack --config webpack.config.js --max-old-space-size=8000"
   },
   "author": "Daniel Griffiths",
   "license": "ISC",

@@ -5,6 +5,7 @@ import bodyParser from 'body-parser'
 import ws from 'ws'
 import { Conn } from 'mysql-layer'
 import RestBuilder from './builder/index'
+import RequestBalancer from './utils/RequestBalancer'
 import routes from './routes/index'
 import sockets from './sockets/index'
 
@@ -19,6 +20,7 @@ global.Conn = new Conn({
 })
 
 global.Conn.connection.connect()
+global.RequestBalancer = RequestBalancer
 
 const ApiApp = express()
 const Router = express.Router()

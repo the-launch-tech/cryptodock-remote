@@ -1,61 +1,86 @@
-import RequestBalancer from '../utils/RequestBalancer'
+import moment from 'moment'
 import Product from '../models/Product'
 import exchangeMap from '../utils/exchangeMap'
 
 const { log, error } = console
 
-module.exports = async function(exchangeId, exchangeName, Client) {
-  log('In Product Builder')
+export default function(exchangeId, exchangeName, Client, callback) {
+  log(
+    'Product Builder',
+    moment()
+      .local()
+      .format('YYYY-MM-DD HH:mm:ss.SSS')
+  )
+
   const map = exchangeMap[exchangeName]
 
-  const getProducts = () => {
+  function getProducts() {
     return new Promise((resolve, reject) => {
       if (exchangeName === 'coinbasepro') {
         Client.getProducts()
           .then(resolve)
-          .catch(reject)
+          .catch(error)
       } else if (exchangeName === 'kucoin') {
         Client.getSymbolsList()
-          .then(res => resolve(res.data))
-          .catch(reject)
+          .then(data => resolve(data.data))
+          .catch(error)
       }
     })
   }
 
-  const siftUnique = (arrOne = [], arrTwo = [], callback) => {
-    let uniqueArr = []
+  function siftUnique(arrOne = [], arrTwo = []) {
+    return new Promise((resolve, reject) => {
+      let uniqueArr = []
 
-    arrOne.map(elOne => {
-      let unique = true
-      arrTwo.map(elTwo => {
-        if (elOne[map.product] === elTwo.pair) {
-          unique = false
+      arrOne.map(elOne => {
+        let unique = true
+        arrTwo.map(elTwo => {
+          if (elOne[map.product] === elTwo.pair) {
+            unique = false
+          }
+        })
+        if (unique) {
+          uniqueArr.push(elOne)
         }
       })
-      if (unique) {
-        uniqueArr.push(elOne)
-      }
-    })
 
-    callback(uniqueArr)
+      resolve(uniqueArr)
+    })
   }
 
-  await RequestBalancer.request(
-    retry =>
-      getProducts()
-        .then(exchangeProducts => {
-          Product.getExchangeProducts(exchangeId)
-            .then(localProducts => {
-              siftUnique(exchangeProducts, localProducts, uniqueProducts => {
-                uniqueProducts.map(product => {
-                  Product.save(exchangeId, product, map.object).catch(error)
-                })
+  function saveUniqueProducts(uniqueProducts) {
+    return uniqueProducts.map(product => {
+      return Product.save(exchangeId, product, map.object)
+        .then(data => data.insertId)
+        .catch(error)
+    })
+  }
+
+  function saveProducts(retry) {
+    return getProducts()
+      .then(exchangeProducts => {
+        return Product.getExchangeProducts(exchangeId)
+          .then(localProducts => {
+            return siftUnique(exchangeProducts, localProducts)
+              .then(async unique => await Promise.all(saveUniqueProducts(unique)))
+              .then(dataIds => {
+                log(
+                  'Product Builder for ' + exchangeName + ' | Ended:',
+                  moment()
+                    .local()
+                    .format('YYYY-MM-DD HH:mm:ss.SSS'),
+                  ' Start ID: ' + dataIds[0] + ' - End ID: ' + dataIds[dataIds.length - 1]
+                )
+                if (typeof callback === 'function') {
+                  callback()
+                }
               })
-            })
-            .catch(error)
-        })
-        .catch(error),
-    exchangeName,
-    exchangeName
-  ).catch(error)
+              .catch(error)
+          })
+          .catch(error)
+      })
+      .catch(error)
+  }
+
+  global.RequestBalancer.request(saveProducts, exchangeName, exchangeName)
 }

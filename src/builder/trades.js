@@ -1,17 +1,23 @@
+import moment from 'moment'
 import Trade from '../models/Trade'
-import RequestBalancer from '../utils/RequestBalancer'
 import Product from '../models/Product'
 import exchangeMap from '../utils/exchangeMap'
 
 const { log, error } = console
 
-module.exports = function(exchangeId, exchangeName, Client) {
-  log('In Trade Builder')
+export default function(exchangeId, exchangeName, Client) {
+  log(
+    'Trade Builder for ' + exchangeName + ' | Started:',
+    moment()
+      .local()
+      .format('YYYY-MM-DD HH:mm:ss.SSS')
+  )
+
   const map = exchangeMap[exchangeName]
   const tradeObject = map.getTradesObject
   const getTradesTimeFn = map.getTradesTimeFn
 
-  const getTrades = (pair, start, end, granularity) => {
+  function getTrades(pair) {
     return new Promise((resolve, reject) => {
       if (exchangeName === 'coinbasepro') {
         Client.getProductTrades(pair)
@@ -25,29 +31,62 @@ module.exports = function(exchangeId, exchangeName, Client) {
     })
   }
 
+  function getLastSequences(products) {
+    return products.map(({ id, pair }) => {
+      return Trade.getLastSequence(id, exchangeId)
+        .then(lastSequence => {
+          return { id, pair, lastSequence }
+        })
+        .catch(error)
+    })
+  }
+
+  function getProductTrades(products) {
+    return products.map(product => {
+      return global.RequestBalancer.request(
+        retry => {
+          return getTrades(product.pair)
+            .then(trades => (exchangeName === 'coinbasepro' ? trades.reverse() : trades))
+            .then(trades => {
+              return { trades, id: product.id, lastSequence: product.lastSequence }
+            })
+            .catch(error)
+        },
+        exchangeName,
+        exchangeName
+      )
+    })
+  }
+
+  function getSavedIds(products) {
+    const loopProductTrades = product => {
+      return product.trades
+        .map(trade => {
+          if (trade[tradeObject['sequence']] > product.lastSequence) {
+            return Trade.save(trade, product.id, exchangeId, tradeObject, getTradesTimeFn)
+              .then(data => data.insertId)
+              .catch(error)
+          }
+        })
+        .filter(Boolean)
+    }
+
+    return products.map(async product => await Promise.all(loopProductTrades(product)))
+  }
+
   Product.getExchangeProducts(exchangeId)
-    .then(products => {
-      products.map(({ id, pair }) => {
-        Trade.getLastSequence(id, exchangeId)
-          .then(lastSequence => {
-            RequestBalancer.request(
-              retry =>
-                getTrades(pair)
-                  .then(trades => {
-                    trades = exchangeName === 'coinbasepro' ? trades.reverse() : trades
-                    trades.map(trade => {
-                      if (trade[tradeObject['sequence']] > lastSequence) {
-                        Trade.save(trade, id, exchangeId, tradeObject, getTradesTimeFn)
-                      }
-                    })
-                  })
-                  .catch(error),
-              exchangeName,
-              exchangeName
-            ).catch(error)
-          })
-          .catch(error)
-      })
+    .then(async products => await Promise.all(getLastSequences(products)))
+    .then(async products => await Promise.all(getProductTrades(products)))
+    .then(async products => await Promise.all(getSavedIds(products)))
+    .then(dataIds => {
+      const ids = dataIds.flat(Infinity)
+      log(
+        'Trade Builder for ' + exchangeName + ' | Ended:',
+        moment()
+          .local()
+          .format('YYYY-MM-DD HH:mm:ss.SSS'),
+        ' Start ID: ' + ids[0] + ' - End ID: ' + ids[ids.length - 1]
+      )
     })
     .catch(error)
 }
