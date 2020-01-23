@@ -71,20 +71,17 @@ export default function(exchangeId, exchangeName, Client) {
       let start = prevTime
 
       return periodArr.map(n => {
+        let momentStart = moment(start)
+        let addedHours = momentStart.add({ hours: maxCandles * (period / 60 / 60) })
         const periodObj = {
           id,
           pair,
-          start: moment(start).format('YYYY-MM-DD HH:mm:ss'),
-          end: moment(start)
-            .add({ hours: maxCandles * (period / 60 / 60) })
-            .format('YYYY-MM-DD HH:mm:ss'),
+          start: momentStart.format('YYYY-MM-DD HH:mm:ss'),
+          end: addedHours.format('YYYY-MM-DD HH:mm:ss'),
           granularity,
         }
 
-        start =
-          moment(start)
-            .add({ hours: maxCandles * (period / 60 / 60) })
-            .unix() * 1000
+        start = addedHours.unix() * 1000
 
         return periodObj
       })

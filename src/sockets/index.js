@@ -1,5 +1,7 @@
 import url from 'url'
 
+const { log, error } = console
+
 export default function(Wss) {
   function noop() {}
 

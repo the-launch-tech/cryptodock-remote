@@ -40,11 +40,11 @@ ApiApp.listen(process.env.PORT, () => {
   log('App Booted At: ' + process.env.PORT + '. Version: ' + process.env.VERSION)
 })
 
-const WebsocketApp = express()
-const Wss = new ws.Server({ server: WebsocketApp })
-sockets(Wss)
-WebsocketApp.listen(process.env.WS_PORT, () => {
-  log('Websocket Booted At: ' + process.env.WS_PORT + '. Version: ' + process.env.WS_VERSION)
-})
+// const WebsocketApp = express()
+// const Wss = new ws.Server({ server: WebsocketApp })
+// sockets(Wss)
+// WebsocketApp.listen(process.env.WS_PORT, () => {
+//   log('Websocket Booted At: ' + process.env.WS_PORT + '. Version: ' + process.env.WS_VERSION)
+// })
 
 RestBuilder()
