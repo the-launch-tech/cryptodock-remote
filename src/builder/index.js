@@ -1,5 +1,4 @@
 import Cron from 'node-schedule'
-import { writeHeapSnapshot } from 'v8'
 import Exchange from '../models/Exchange'
 import coinbaseProClient from '../clients/CoinbasePro'
 import kucoinClient from '../clients/Kucoin'
@@ -19,7 +18,7 @@ const RestBuilder = function() {
     { fn: kLineBuilder, cron: '0 30 */5 * * *' },
   ]
   const clientExchanges = [
-    { client: kucoinClient.initialize(), name: 'kucoin', label: 'Kucoin' },
+    // { client: kucoinClient.initialize(), name: 'kucoin', label: 'Kucoin' },
     { client: coinbaseProClient.initialize(), name: 'coinbasepro', label: 'CoinbasePro' },
   ]
 
@@ -27,7 +26,6 @@ const RestBuilder = function() {
     productBuilder(exchangeId, clientExchange.name, clientExchange.client, () => {
       builders.map(builder => {
         Cron.scheduleJob(builder.cron, () => {
-          writeHeapSnapshot('/heap/snap-' + Number(new Date()) + '.txt')
           builder.fn(exchangeId, clientExchange.name, clientExchange.client)
         })
         // builder.fn(exchangeId, clientExchange.name, clientExchange.client)
