@@ -1,0 +1,9 @@
+{
+  "apps": [
+    {
+      "name": "remote",
+      "script": "npm",
+      "args": "build:prod"
+    }
+  ]
+}
