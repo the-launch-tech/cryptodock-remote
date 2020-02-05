@@ -27,8 +27,14 @@ ApiApp.use(bodyParser.urlencoded({ extended: true }))
 ApiApp.use(bodyParser.json())
 
 ApiApp.use((req, res, next) => {
-  log('%s %s %s %s', req.method, req.url, req.path, process.env.DB_API)
-  next()
+  if (!req.headers.ACCESS_KEY) {
+    res.status(403).send('No ACCESS_KEY Header!')
+  } else if (req.headers.ACCESS_KEY !== process.env.ACCESS_KEY) {
+    res.status(403).send('ACCESS_KEY Header Not Valid!')
+  } else {
+    log('%s %s %s %s', req.method, req.url, req.path, process.env.DB_API)
+    next()
+  }
 })
 
 routes(ApiApp)
