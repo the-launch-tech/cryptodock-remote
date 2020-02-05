@@ -3,6 +3,7 @@
     [
       "@babel/env",
       {
+        "corejs": "3.0.0",
         "modules": "commonjs",
         "targets": {
           "node": "current"
