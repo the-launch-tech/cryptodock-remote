@@ -34,7 +34,7 @@ program
   .command('migrate <action>')
   .description('Run migration file')
   .action(fileName => {
-    const Conn = require('mysql-layer').Conn
+    const Conn = require('the_launch-mysql-layer').Conn
 
     const Connection = new Conn({
       hostname: process.env.DB_HOST,

@@ -25,6 +25,7 @@
     "kucoin-sdk": "^1.0.0",
     "moment": "^2.24.0",
     "node-schedule": "^1.3.2",
+    "pm2": "^4.2.3",
     "smart-request-balancer": "^2.0.0",
     "the_launch-mysql-layer": "^1.0.1"
   },
