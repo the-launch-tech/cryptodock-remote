@@ -8,7 +8,8 @@
   },
   "scripts": {
     "buildprod": "webpack --config webpack.config.prod.js --max-old-space-size=12000",
-    "build": "webpack --config webpack.config.js --max-old-space-size=12000"
+    "build": "webpack --config webpack.config.js --max-old-space-size=12000",
+    "prod": "node bin/index.js"
   },
   "author": "Daniel Griffiths",
   "license": "ISC",
