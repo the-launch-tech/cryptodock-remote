@@ -1,9 +1,9 @@
-var webpack = require('webpack')
-var path = require('path')
-var fs = require('fs')
+const webpack = require('webpack')
+const path = require('path')
+const fs = require('fs')
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
-var nodeModules = {}
+const nodeModules = {}
 fs.readdirSync('node_modules')
   .filter(function(x) {
     return ['.bin'].indexOf(x) === -1
@@ -19,7 +19,6 @@ module.exports = {
   output: {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
-    // libraryTarget: 'commonjs2',
   },
   devServer: {
     historyApiFallback: true,
