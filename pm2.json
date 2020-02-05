@@ -3,7 +3,7 @@
     {
       "name": "remote",
       "script": "npm",
-      "args": "build:prod"
+      "args": "prod"
     }
   ]
 }
