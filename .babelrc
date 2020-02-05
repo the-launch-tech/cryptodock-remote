@@ -23,5 +23,10 @@
         "useESModules": false
       }
     ]
-  ]
+  ],
+  "env": {
+    "production": {
+      "presets": ["minify"]
+    }
+  }
 }

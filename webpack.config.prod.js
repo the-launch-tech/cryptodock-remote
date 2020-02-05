@@ -1,7 +1,6 @@
 const webpack = require('webpack')
 const path = require('path')
 const fs = require('fs')
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
 
 const nodeModules = {}
 fs.readdirSync('node_modules')
@@ -24,11 +23,7 @@ module.exports = {
     historyApiFallback: true,
   },
   devtool: 'source-map',
-  plugins: [
-    new UglifyJsPlugin({
-      test: /\.js($|\?)/i,
-    }),
-  ],
+  plugins: [],
   resolve: {
     extensions: ['.js'],
   },
