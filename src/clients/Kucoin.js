@@ -1,6 +1,6 @@
-const Kucoin = require('kucoin-sdk')
+import Kucoin from 'kucoin-sdk'
 
-module.exports = {
+export default {
   initialize: () => {
     const params = {
       SECRET: process.env.KUCOIN_API_SECRET,

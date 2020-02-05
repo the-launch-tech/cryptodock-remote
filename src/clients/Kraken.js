@@ -1,6 +1,6 @@
-const Kraken = require('kraken-sdk')
+import Kraken from 'kraken-sdk'
 
-module.exports = {
+export default {
   initialize: () => {
     const params = {
       SECRET: process.env.KRAKEN_API_SECRET,

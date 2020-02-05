@@ -3,30 +3,7 @@ import moment from 'moment'
 
 const { log, error } = console
 
-Date.prototype.standardFormat = function() {
-  function pad(number) {
-    if (number < 10) {
-      return '0' + number
-    }
-    return number
-  }
-
-  return (
-    this.getUTCFullYear() +
-    '-' +
-    pad(this.getUTCMonth() + 1) +
-    '-' +
-    pad(this.getUTCDate()) +
-    ' ' +
-    pad(this.getUTCHours()) +
-    ':' +
-    pad(this.getUTCMinutes()) +
-    ':' +
-    pad(this.getUTCSeconds())
-  )
-}
-
-class KLine extends Model {
+export default class KLine extends Model {
   constructor() {
     super()
   }
@@ -220,5 +197,3 @@ class KLine extends Model {
     })
   }
 }
-
-export default KLine

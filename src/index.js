@@ -2,7 +2,7 @@ require('dotenv').config()
 
 import express from 'express'
 import bodyParser from 'body-parser'
-import { Conn } from 'mysql-layer'
+import { Conn } from 'the_launch-mysql-layer'
 import RestBuilder from './builder/index'
 import RequestBalancer from './utils/RequestBalancer'
 import routes from './routes/index'
@@ -16,7 +16,6 @@ global.Conn = new Conn({
   database: process.env.DB_NAME,
   multipleStatements: true,
 })
-
 global.Conn.connection.connect()
 global.RequestBalancer = RequestBalancer
 

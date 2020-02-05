@@ -1,6 +1,6 @@
-const moment = require('moment')
+import moment from 'moment'
 
-module.exports = {
+export default {
   coinbasepro: {
     getProducts: 'getProducts',
     getKLinePeriod: 'getProductHistoricRates',

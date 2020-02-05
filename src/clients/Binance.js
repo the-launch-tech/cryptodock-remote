@@ -1,6 +1,6 @@
-const Binance = require('node-binance-us-api')
+import Binance from 'node-binance-us-api'
 
-module.exports = {
+export default {
   initialize: () => {
     const params = {
       APIKEY: process.env.BINANCE_API_KEY,
@@ -8,6 +8,6 @@ module.exports = {
       useServerTime: true,
     }
 
-    new Binance().options(params)
+    return new Binance().options(params)
   },
 }

@@ -2,7 +2,7 @@ import Model from './Model'
 
 const { log, error } = console
 
-class Product extends Model {
+export default class Product extends Model {
   constructor() {
     super()
   }
@@ -149,5 +149,3 @@ class Product extends Model {
     })
   }
 }
-
-export default Product

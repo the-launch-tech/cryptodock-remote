@@ -3,7 +3,7 @@ import moment from 'moment'
 
 const { log, error } = console
 
-class Ticker extends Model {
+export default class Ticker extends Model {
   constructor() {
     super()
   }
@@ -174,5 +174,3 @@ class Ticker extends Model {
     })
   }
 }
-
-export default Ticker

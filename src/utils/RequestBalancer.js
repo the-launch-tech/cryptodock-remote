@@ -1,6 +1,6 @@
 import Queue from 'smart-request-balancer'
 
-const RequestBalancer = new Queue({
+export default new Queue({
   rules: {
     coinbasepro: {
       rate: 1,
@@ -24,5 +24,3 @@ const RequestBalancer = new Queue({
     },
   },
 })
-
-export default RequestBalancer

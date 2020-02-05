@@ -2,7 +2,7 @@ import Model from './Model'
 
 const { log, error } = console
 
-class Exchange extends Model {
+export default class Exchange extends Model {
   constructor() {
     super()
   }
@@ -65,5 +65,3 @@ class Exchange extends Model {
     })
   }
 }
-
-export default Exchange

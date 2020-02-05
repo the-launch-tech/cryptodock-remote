@@ -3,7 +3,7 @@ import moment from 'moment'
 
 const { log, error } = console
 
-class Trade extends Model {
+export default class Trade extends Model {
   constructor() {
     super()
   }
@@ -174,5 +174,3 @@ class Trade extends Model {
     })
   }
 }
-
-export default Trade

@@ -2,7 +2,7 @@ import Controller from './Controller'
 import CoinbasePro from '../clients/CoinbasePro'
 import exchangeMap from '../utils/exchangeMap'
 
-class CoinbaseProController extends Controller {
+export default class CoinbaseProController extends Controller {
   constructor() {
     super()
   }
@@ -364,5 +364,3 @@ class CoinbaseProController extends Controller {
     })
   }
 }
-
-export default CoinbaseProController

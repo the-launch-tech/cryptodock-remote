@@ -1,6 +1,6 @@
-const CoinbasePro = require('coinbase-pro')
+import CoinbasePro from 'coinbase-pro'
 
-module.exports = {
+export default {
   initialize: () => {
     const key = process.env.COINBASEPRO_API_KEY
     const secret = process.env.COINBASEPRO_API_SECRET

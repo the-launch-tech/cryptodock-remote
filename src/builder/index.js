@@ -10,13 +10,14 @@ import tickerBuilder from './tickers'
 
 const { log, error } = console
 
-const RestBuilder = function() {
+export default function() {
   const builders = [
     { fn: productBuilder, cron: '0 20 1 * * *' },
     { fn: tickerBuilder, cron: '0 */10 * * * *' },
     { fn: tradeBuilder, cron: '30 */30 * * * *' },
     { fn: kLineBuilder, cron: '0 45 */2 * * *' },
   ]
+
   const clientExchanges = [
     { client: coinbaseProClient.initialize(), name: 'coinbasepro', label: 'CoinbasePro' },
     { client: kucoinClient.initialize(), name: 'kucoin', label: 'Kucoin' },
@@ -51,5 +52,3 @@ const RestBuilder = function() {
     .then(buildThroughExchanges)
     .catch(error)
 }
-
-export default RestBuilder

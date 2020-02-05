@@ -2,7 +2,7 @@ import Controller from './Controller'
 import Kucoin from '../clients/Kucoin'
 import exchangeMap from '../utils/exchangeMap'
 
-class KucoinController extends Controller {
+export default class KucoinController extends Controller {
   constructor() {
     super()
   }
@@ -146,5 +146,3 @@ class KucoinController extends Controller {
     })
   }
 }
-
-export default KucoinController

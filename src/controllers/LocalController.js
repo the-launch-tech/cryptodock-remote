@@ -5,7 +5,7 @@ import Trade from '../models/Trade'
 import Ticker from '../models/Ticker'
 import KLine from '../models/KLine'
 
-class LocalController extends Controller {
+export default class LocalController extends Controller {
   constructor() {
     super()
   }
@@ -87,5 +87,3 @@ class LocalController extends Controller {
       .catch(err => super.err(res, 500, err))
   }
 }
-
-export default LocalController
