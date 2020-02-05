@@ -4,12 +4,12 @@ export default new Queue({
   rules: {
     coinbasepro: {
       rate: 1,
-      limit: 0.6,
+      limit: 0.7,
       priority: 1,
     },
     kucoin: {
       rate: 1,
-      limit: 0.1,
+      limit: 0.15,
       priority: 1,
     },
     binance: {
