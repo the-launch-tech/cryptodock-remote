@@ -14,12 +14,12 @@ const RestBuilder = function() {
   const builders = [
     { fn: productBuilder, cron: '0 20 1 * * *' },
     { fn: tickerBuilder, cron: '0 */10 * * * *' },
-    { fn: tradeBuilder, cron: '0 5 * * * *' },
-    { fn: kLineBuilder, cron: '0 30 */5 * * *' },
+    { fn: tradeBuilder, cron: '30 */30 * * * *' },
+    { fn: kLineBuilder, cron: '0 45 */2 * * *' },
   ]
   const clientExchanges = [
-    // { client: kucoinClient.initialize(), name: 'kucoin', label: 'Kucoin' },
     { client: coinbaseProClient.initialize(), name: 'coinbasepro', label: 'CoinbasePro' },
+    { client: kucoinClient.initialize(), name: 'kucoin', label: 'Kucoin' },
   ]
 
   function buildData(exchangeId, clientExchange) {

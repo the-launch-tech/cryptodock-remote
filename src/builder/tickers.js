@@ -7,12 +7,7 @@ import exchangeMap from '../utils/exchangeMap'
 const { log, error } = console
 
 export default function(exchangeId, exchangeName, Client) {
-  log(
-    '\n Ticker Builder for ' + exchangeName + ' | Started:',
-    moment()
-      .local()
-      .format('YYYY-MM-DD HH:mm:ss.SSS')
-  )
+  log('Tickers Started', exchangeName)
 
   const map = exchangeMap[exchangeName]
   const tickerObject = map.tickerObject
@@ -23,22 +18,20 @@ export default function(exchangeId, exchangeName, Client) {
       if (exchangeName === 'coinbasepro') {
         Client.getProductTicker(pair)
           .then(resolve)
-          .catch(reject)
+          .catch(error)
       } else if (exchangeName === 'kucoin') {
         Client.getTicker({ symbol: pair })
           .then(res => resolve(res.data))
-          .catch(reject)
+          .catch(error)
       }
     })
   }
 
   function getLastSequences(products) {
     return products.map(({ id, pair }) => {
-      return Ticker.getLastSequence(id, exchangeId)
-        .then(lastSequence => {
-          return { id, pair, lastSequence }
-        })
-        .catch(error)
+      return Ticker.getLastSequence(id, exchangeId).then(lastSequence => {
+        return { id, pair, lastSequence }
+      })
     })
   }
 
@@ -46,11 +39,9 @@ export default function(exchangeId, exchangeName, Client) {
     return products.map(product => {
       return global.RequestBalancer.request(
         retry => {
-          return getTicker(product.pair)
-            .then(ticker => {
-              return { ticker, id: product.id, lastSequence: product.lastSequence }
-            })
-            .catch(error)
+          return getTicker(product.pair).then(ticker => {
+            return { ticker, id: product.id, lastSequence: product.lastSequence }
+          })
         },
         exchangeName,
         exchangeName
@@ -60,11 +51,15 @@ export default function(exchangeId, exchangeName, Client) {
 
   function getSavedIds(products) {
     return products
-      .map(product => {
+      .map(async product => {
         if (product.ticker[tickerObject['sequence']] > product.lastSequence) {
-          return Ticker.save(product.ticker, product.id, exchangeId, tickerObject, tickersTimeFn)
-            .then(data => data.insertId)
-            .catch(error)
+          return await Ticker.save(
+            product.ticker,
+            product.id,
+            exchangeId,
+            tickerObject,
+            tickersTimeFn
+          )
         }
       })
       .filter(Boolean)
@@ -74,14 +69,6 @@ export default function(exchangeId, exchangeName, Client) {
     .then(async products => await Promise.all(getLastSequences(products)))
     .then(async products => await Promise.all(getProductTickers(products)))
     .then(async products => await Promise.all(getSavedIds(products)))
-    .then(dataIds => {
-      log(
-        'Ticker Builder for ' + exchangeName + ' | Ended:',
-        moment()
-          .local()
-          .format('YYYY-MM-DD HH:mm:ss.SSS'),
-        ' Start ID: ' + dataIds[0] + ' - End ID: ' + dataIds[dataIds.length - 1] + '\n'
-      )
-    })
+    .then(() => log('Tickers Complete', exchangeName))
     .catch(error)
 }

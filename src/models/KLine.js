@@ -3,6 +3,29 @@ import moment from 'moment'
 
 const { log, error } = console
 
+Date.prototype.standardFormat = function() {
+  function pad(number) {
+    if (number < 10) {
+      return '0' + number
+    }
+    return number
+  }
+
+  return (
+    this.getUTCFullYear() +
+    '-' +
+    pad(this.getUTCMonth() + 1) +
+    '-' +
+    pad(this.getUTCDate()) +
+    ' ' +
+    pad(this.getUTCHours()) +
+    ':' +
+    pad(this.getUTCMinutes()) +
+    ':' +
+    pad(this.getUTCSeconds())
+  )
+}
+
 class KLine extends Model {
   constructor() {
     super()
@@ -146,6 +169,18 @@ class KLine extends Model {
     })
   }
 
+  static getLastCycle() {
+    return new Promise((resolve, reject) => {
+      global.Conn.asyncQuery(
+        'SELECT server_time FROM klines ORDER BY server_time DESC LIMIT 1',
+        (err, data) => {
+          if (err) reject(err)
+          resolve(data && data[0] ? data[0]['server_time'] : moment().subtract({ hours: 10 }))
+        }
+      )
+    })
+  }
+
   static getLastTimestamp(productId, exchangeId) {
     return new Promise((resolve, reject) => {
       global.Conn.asyncQuery(
@@ -159,13 +194,14 @@ class KLine extends Model {
     })
   }
 
-  static save(kline, productId, exchangeId, map, periodInSeconds) {
-    const klineArr = map.klineArr
+  static save(kline, productId, exchangeId, { klineArr }, periodInSeconds) {
     return new Promise((resolve, reject) => {
       global.Conn.asyncQuery(
         'INSERT INTO klines (server_time, low, high, open, close, amount, volume, period, exchange_id, product_id) values (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)',
         [
-          moment(kline[klineArr[0]] * 1000).format('YYYY-MM-DD HH:mm:ss.SSS'),
+          moment(kline[klineArr[0]] * 1000)
+            .local()
+            .format('YYYY-MM-DD HH:mm:ss.SSS'),
           kline[klineArr[1]],
           kline[klineArr[2]],
           kline[klineArr[3]],

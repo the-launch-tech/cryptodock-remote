@@ -5,12 +5,7 @@ import exchangeMap from '../utils/exchangeMap'
 const { log, error } = console
 
 export default function(exchangeId, exchangeName, Client, callback) {
-  log(
-    '\n Product Builder',
-    moment()
-      .local()
-      .format('YYYY-MM-DD HH:mm:ss.SSS')
-  )
+  log('Products Started', exchangeName)
 
   const map = exchangeMap[exchangeName]
 
@@ -49,37 +44,24 @@ export default function(exchangeId, exchangeName, Client, callback) {
   }
 
   function saveUniqueProducts(uniqueProducts) {
-    return uniqueProducts.map(product => {
-      return Product.save(exchangeId, product, map.object)
-        .then(data => data.insertId)
-        .catch(error)
+    return uniqueProducts.map(async product => {
+      return await Product.save(exchangeId, product, map.object)
     })
   }
 
   function saveProducts(retry) {
-    return getProducts()
-      .then(exchangeProducts => {
-        return Product.getExchangeProducts(exchangeId)
-          .then(localProducts => {
-            return siftUnique(exchangeProducts, localProducts)
-              .then(async unique => await Promise.all(saveUniqueProducts(unique)))
-              .then(dataIds => {
-                log(
-                  'Product Builder for ' + exchangeName + ' | Ended:',
-                  moment()
-                    .local()
-                    .format('YYYY-MM-DD HH:mm:ss.SSS'),
-                  ' Start ID: ' + dataIds[0] + ' - End ID: ' + dataIds[dataIds.length - 1] + '\n'
-                )
-                if (typeof callback === 'function') {
-                  callback()
-                }
-              })
-              .catch(error)
+    return getProducts().then(exchangeProducts => {
+      return Product.getExchangeProducts(exchangeId).then(localProducts => {
+        return siftUnique(exchangeProducts, localProducts)
+          .then(async unique => await Promise.all(saveUniqueProducts(unique)))
+          .then(() => {
+            log('Products Complete', exchangeName)
+            if (typeof callback === 'function') {
+              callback()
+            }
           })
-          .catch(error)
       })
-      .catch(error)
+    })
   }
 
   global.RequestBalancer.request(saveProducts, exchangeName, exchangeName)

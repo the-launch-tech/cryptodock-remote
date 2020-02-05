@@ -6,45 +6,34 @@ import moment from 'moment'
 
 const { log, error } = console
 
-Date.prototype.addHours = function(h) {
-  this.setHours(this.getHours() + h)
-  return this
-}
-
 export default function(exchangeId, exchangeName, Client) {
-  log(
-    '\n Kline Builder for ' + exchangeName + ' | Started:',
-    moment()
-      .local()
-      .format('YYYY-MM-DD HH:mm:ss.SSS')
-  )
+  log('Klines Started', exchangeName)
 
   const period = 60
   const map = exchangeMap[exchangeName]
   const klinePeriod = map.klinePeriod
   const granularity = klinePeriod[period.toString()]
-  const maxCandles = map.maxCandles
-  const currTime = moment().unix() * 1000
+  const maxCandles = 300
+  const hours = maxCandles * (period / period / period)
 
-  function getKlines(pair, start, end, granularity) {
+  function getKlines(pair, start, granularity) {
     return new Promise((resolve, reject) => {
       if (exchangeName === 'coinbasepro') {
         Client.getProductHistoricRates(pair, {
           granularity,
-          start,
-          end,
+          start: start.coinbasepro,
         })
           .then(resolve)
-          .catch(reject)
+          .catch(error)
       } else if (exchangeName === 'kucoin') {
         Client.getKlines({
           symbol: pair,
-          startAt: moment(start).unix(),
-          endAt: moment(end).unix(),
+          startAt: start.kucoin,
+          endAt: moment().unix(),
           type: granularity,
         })
           .then(data => resolve(data.data))
-          .catch(reject)
+          .catch(error)
       }
     })
   }
@@ -53,93 +42,62 @@ export default function(exchangeId, exchangeName, Client) {
     return products.map(({ id, pair }) => {
       return KLine.getLastTimestamp(id, exchangeId)
         .then(lastTimestamp => {
-          const prevTime = moment(lastTimestamp).unix() * 1000
-          const diffMs = currTime - prevTime
-          const diffSec = Math.round(diffMs / 1000)
-          const periodCount = Math.floor(diffSec / period)
-          const periodArr = [
-            ...Array(periodCount < maxCandles ? 1 : Math.floor(periodCount / maxCandles)).keys(),
-          ]
-          return { id, pair, lastTimestamp, prevTime, periodArr, maxCandles }
+          const start = moment(lastTimestamp)
+          return {
+            id,
+            pair,
+            start: {
+              coinbasepro: start.format('YYYY-MM-DD HH:mm:ss'),
+              kucoin: start.unix(),
+            },
+          }
         })
         .catch(error)
     })
   }
 
-  function buildPeriodList(products) {
-    const loopPeriodsArray = ({ id, pair, lastTimestamp, prevTime, periodArr, maxCandles }) => {
-      let start = prevTime
-
-      return periodArr.map(n => {
-        let momentStart = moment(start)
-        let addedHours = momentStart.add({ hours: maxCandles * (period / 60 / 60) })
-        const periodObj = {
-          id,
-          pair,
-          start: momentStart.format('YYYY-MM-DD HH:mm:ss'),
-          end: addedHours.format('YYYY-MM-DD HH:mm:ss'),
-          granularity,
-        }
-
-        start = addedHours.unix() * 1000
-
-        return periodObj
-      })
-    }
-
-    return products.map(async product => await Promise.all(loopPeriodsArray(product)))
-  }
-
   function getProductKlines(products) {
-    const loopPeriods = periods => {
-      return periods.map(({ pair, start, end, granularity, id }) => {
-        return RequestBalancer.request(
-          retry => {
-            return getKlines(pair, start, end, granularity)
-              .then(klines => {
-                return { id, klines }
-              })
-              .catch(error)
-          },
-          exchangeName,
-          exchangeName
-        )
-      })
-    }
-
-    return products.map(async periods => await Promise.all(loopPeriods(periods)))
+    return products.map(({ id, pair, start }) => {
+      return RequestBalancer.request(
+        retry => {
+          return getKlines(pair, start, granularity)
+            .then(klines => {
+              const isDuplicate = (a, b) =>
+                a[1] === b[1] && a[2] === b[2] && a[3] === b[3] && a[4] === b[4] && a[5] === b[5]
+              let i = 1
+              if (klines.length) {
+                while (i < klines.length) {
+                  if (isDuplicate(klines[i], klines[i - 1])) {
+                    klines.splice(i, 1)
+                  } else {
+                    i++
+                  }
+                }
+              }
+              return { id, klines }
+            })
+            .catch(error)
+        },
+        exchangeName,
+        exchangeName
+      )
+    })
   }
 
   function saveProductKlines(products) {
-    const handleKlineSave = group => {
-      return group.klines.reverse().map(kline => {
-        return KLine.save(kline, group.id, exchangeId, map, period)
-          .then(data => data.insertId)
-          .catch(error)
-      })
+    const handleKlineSave = product => {
+      return product.klines
+        .reverse()
+        .map(kline => KLine.save(kline, product.id, exchangeId, map, period).catch(error))
     }
 
-    const loopProductKlines = product => {
-      return product.map(async group => await Promise.all(handleKlineSave(group)))
-    }
-
-    return products.map(async product => await Promise.all(loopProductKlines(product)))
+    return products.map(async product => await Promise.all(handleKlineSave(product)))
   }
 
   Product.getExchangeProducts(exchangeId)
     .then(async products => await Promise.all(getLastTimestamps(products)))
-    .then(async products => await Promise.all(buildPeriodList(products)))
     .then(async products => await Promise.all(getProductKlines(products)))
     .then(async products => await Promise.all(saveProductKlines(products)))
-    .then(dataIds => {
-      const ids = dataIds.flat(Infinity)
-      log(
-        'Kline Builder for ' + exchangeName + ' | Ended:',
-        moment()
-          .local()
-          .format('YYYY-MM-DD HH:mm:ss.SSS'),
-        ' Start ID: ' + ids[0] + ' - End ID: ' + ids[ids.length - 1] + '\n'
-      )
-    })
+    .then(() => log('Klines Complete', exchangeName))
     .catch(error)
 }

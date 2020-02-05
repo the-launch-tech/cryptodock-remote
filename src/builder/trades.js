@@ -6,12 +6,7 @@ import exchangeMap from '../utils/exchangeMap'
 const { log, error } = console
 
 export default function(exchangeId, exchangeName, Client) {
-  log(
-    '\n Trade Builder for ' + exchangeName + ' | Started:',
-    moment()
-      .local()
-      .format('YYYY-MM-DD HH:mm:ss.SSS')
-  )
+  log('Trades Started', exchangeName)
 
   const map = exchangeMap[exchangeName]
   const tradeObject = map.getTradesObject
@@ -22,22 +17,20 @@ export default function(exchangeId, exchangeName, Client) {
       if (exchangeName === 'coinbasepro') {
         Client.getProductTrades(pair)
           .then(resolve)
-          .catch(reject)
+          .catch(error)
       } else if (exchangeName === 'kucoin') {
         Client.getTradeHistories({ symbol: pair })
           .then(res => resolve(res.data))
-          .catch(reject)
+          .catch(error)
       }
     })
   }
 
   function getLastSequences(products) {
     return products.map(({ id, pair }) => {
-      return Trade.getLastSequence(id, exchangeId)
-        .then(lastSequence => {
-          return { id, pair, lastSequence }
-        })
-        .catch(error)
+      return Trade.getLastSequence(id, exchangeId).then(lastSequence => {
+        return { id, pair, lastSequence }
+      })
     })
   }
 
@@ -50,7 +43,6 @@ export default function(exchangeId, exchangeName, Client) {
             .then(trades => {
               return { trades, id: product.id, lastSequence: product.lastSequence }
             })
-            .catch(error)
         },
         exchangeName,
         exchangeName
@@ -61,11 +53,9 @@ export default function(exchangeId, exchangeName, Client) {
   function getSavedIds(products) {
     const loopProductTrades = product => {
       return product.trades
-        .map(trade => {
+        .map(async trade => {
           if (trade[tradeObject['sequence']] > product.lastSequence) {
-            return Trade.save(trade, product.id, exchangeId, tradeObject, getTradesTimeFn)
-              .then(data => data.insertId)
-              .catch(error)
+            return await Trade.save(trade, product.id, exchangeId, tradeObject, getTradesTimeFn)
           }
         })
         .filter(Boolean)
@@ -78,15 +68,6 @@ export default function(exchangeId, exchangeName, Client) {
     .then(async products => await Promise.all(getLastSequences(products)))
     .then(async products => await Promise.all(getProductTrades(products)))
     .then(async products => await Promise.all(getSavedIds(products)))
-    .then(dataIds => {
-      const ids = dataIds.flat(Infinity)
-      log(
-        'Trade Builder for ' + exchangeName + ' | Ended:',
-        moment()
-          .local()
-          .format('YYYY-MM-DD HH:mm:ss.SSS'),
-        ' Start ID: ' + ids[0] + ' - End ID: ' + ids[ids.length - 1] + '\n'
-      )
-    })
+    .then(() => log('Trades Complete', exchangeName))
     .catch(error)
 }
