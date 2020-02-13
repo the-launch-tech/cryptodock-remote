@@ -27,6 +27,7 @@ ApiApp.use(bodyParser.urlencoded({ extended: true }))
 ApiApp.use(bodyParser.json())
 
 ApiApp.use((req, res, next) => {
+  log(req.headers, process.env.ACCESS_KEY)
   if (!req.headers.ACCESS_KEY) {
     res.status(403).send('No ACCESS_KEY Header!')
   } else if (req.headers.ACCESS_KEY !== process.env.ACCESS_KEY) {
