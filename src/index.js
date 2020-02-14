@@ -28,19 +28,10 @@ ApiApp.use(bodyParser.urlencoded({ extended: true }))
 ApiApp.use(bodyParser.json())
 
 ApiApp.use((req, res, next) => {
-  log(req.headers, process.env.ACCESS_KEY)
-  if (!req.headers.ACCESS_KEY) {
-    res
-      .status(200)
-      .json({ message: 'NO HEADER ACCESS KEY', KEY: process.env.ACCESS_KEY, HEADERS: req.headers })
-    // res.status(403).send('No ACCESS_KEY Header!')
-  } else if (req.headers.ACCESS_KEY !== process.env.ACCESS_KEY) {
-    res.status(200).json({
-      message: 'NOT MATCHING ACCESS KEY',
-      KEY: process.env.ACCESS_KEY,
-      HEADERS: req.headers,
-    })
-    // res.status(403).send('ACCESS_KEY Header Not Valid!')
+  if (!req.headers['access-key']) {
+    res.status(403).send('No access-key Header!')
+  } else if (req.headers['access-key'] !== process.env.ACCESS_KEY) {
+    res.status(403).send('access-key Header Not Valid!')
   } else {
     log('%s %s %s %s', req.method, req.url, req.path, process.env.DB_API)
     next()
