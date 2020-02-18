@@ -1,6 +1,8 @@
 const webpack = require('webpack')
 const path = require('path')
 const fs = require('fs')
+const WebpackShellPlugin = require('webpack-shell-plugin')
+const TerserPlugin = require('terser-webpack-plugin')
 
 const nodeModules = {}
 fs.readdirSync('node_modules')
@@ -19,11 +21,17 @@ module.exports = {
     filename: 'index.js',
     path: path.resolve(__dirname, 'dist'),
   },
-  devServer: {
-    historyApiFallback: true,
-  },
   devtool: 'source-map',
-  plugins: [],
+  optimization: {
+    mangleWasmImports: true,
+    removeAvailableModules: true,
+    splitChunks: {
+      chunks: 'all',
+    },
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+  },
+  plugins: [new WebpackShellPlugin({ onBuildEnd: ['nodemon dist/index.js'] })],
   resolve: {
     extensions: ['.js'],
   },

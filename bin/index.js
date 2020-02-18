@@ -4,14 +4,27 @@ require('dotenv').config()
 
 const path = require('path')
 const program = require('commander')
-const inquirer = require('inquirer')
 const chalk = require('chalk')
 const helpers = require('./helpers')
+const config = require('../src/config')
+const jwt = require('jsonwebtoken')
 
-const log = console.log
-const error = console.error
+const { log, error } = console
+const { srv } = config()
 
 program.version('0.0.1', '-v, --vers', 'Current CryptoDockRemoteCLI Version')
+
+program
+  .command('newToken <role> <expiration>')
+  .description('Create new token for API use')
+  .action(async (role, expiration) => {
+    try {
+      const token = await jwt.sign(JSON.stringify({ role, expiresIn: expiration }), srv.secret)
+      log(chalk.green('Token (role=' + role + ', expiration=' + expiration + '): ' + token))
+    } catch (err) {
+      error(err)
+    }
+  })
 
 program
   .command('addvar <newKey> <newValue>')

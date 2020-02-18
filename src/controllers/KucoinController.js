@@ -1,148 +1,193 @@
-import Controller from './Controller'
 import Kucoin from '../clients/Kucoin'
-import exchangeMap from '../utils/exchangeMap'
 
-export default class KucoinController extends Controller {
-  constructor() {
-    super()
-  }
+const { log, error } = console
+const { Errors } = global.config
 
-  getCurrencies(req, res, next) {
-    Kucoin.getCurrencies(({ error, data }) => {
-      if (error) return super.err(res, 500, error)
+export default class KucoinController {
+  static async getCurrencies(req, res, next) {
+    try {
+      const { data } = await Kucoin.getCurrencies()
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  getSymbolsList(req, res, next) {
+  static async getSymbolsList(req, res, next) {
     const { market } = req.params
+
     if (!market) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    Kucoin.getSymbolsList({ market }, ({ error, data }) => {
-      if (error) return super.err(res, 500, error)
+
+    try {
+      const { data } = await Kucoin.getSymbolsList({ market })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  getTicker(req, res, next) {
+  static async getTicker(req, res, next) {
     const { pair } = req.query
+
     if (!pair) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    Kucoin.getTicker({ symbol: pair }, ({ error, data }) => {
-      if (error) return super.err(res, 500, error)
+
+    try {
+      const { data } = await Kucoin.getTicker({ symbol: pair })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  getAllTickers(req, res, next) {
-    Kucoin.getAllTickers(({ error, data }) => {
-      if (error) return super.err(res, 500, error)
+  static async getAllTickers(req, res, next) {
+    try {
+      const { data } = await Kucoin.getAllTickers()
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  get24HourStats(req, res, next) {
+  static async get24HourStats(req, res, next) {
     const { pair } = req.query
+
     if (!pair) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    Kucoin.get24HourStats({ symbol: pair }, ({ error, data }) => {
-      if (error) return super.err(res, 500, error)
+
+    try {
+      const { data } = await Kucoin.get24HourStats({ symbol: pair })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  getMarketList(req, res, next) {
-    Kucoin.getMarketList(({ error, data }) => {
-      if (error) return super.err(res, 500, error)
+  static async getMarketList(req, res, next) {
+    try {
+      const { data } = await Kucoin.getMarketList()
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  getPartOrderBook(req, res, next) {
+  static async getPartOrderBook(req, res, next) {
     const { pair } = req.query
     const { depth } = req.params
+
     if (!pair || !depth) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    Kucoin.getPartOrderBook({ pair, depth }, ({ error, data }) => {
-      if (error) return super.err(res, 500, error)
+
+    try {
+      const { data } = await Kucoin.getPartOrderBook({ symbol: pair, depth })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  getFullOrderBookAggregated(req, res, next) {
+  static async getFullOrderBookAggregated(req, res, next) {
     const { pair } = req.query
     const { depth } = req.params
+
     if (!pair || !depth) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    Kucoin.getFullOrderBookAggregated({ pair, depth }, ({ error, data }) => {
-      if (error) return super.err(res, 500, error)
+
+    try {
+      const { data } = await Kucoin.getFullOrderBookAggregated({ symbol: pair, depth })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  getFullOrderBookAtomic(req, res, next) {
+  static async getFullOrderBookAtomic(req, res, next) {
     const { pair } = req.query
+
     if (!pair) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    Kucoin.getFullOrderBookAtomic({ symbol: pair }, ({ error, data }) => {
-      if (error) return super.err(res, 500, error)
+
+    try {
+      const { data } = await Kucoin.getFullOrderBookAtomic({ symbol: pair })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  getTradeHistories(req, res, next) {
+  static async getTradeHistories(req, res, next) {
     const { pair } = req.query
+
     if (!pair) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    Kucoin.getTradeHistories({ symbol: pair }, ({ error, data }) => {
-      if (error) return super.err(res, 500, error)
+
+    try {
+      const { data } = await Kucoin.getTradeHistories({ symbol: pair })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  getKlines(req, res, next) {
+  static async getKlines(req, res, next) {
     const { pair } = req.query
     const { start, end, granularity } = req.params
+
     if (!pair) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    Kucoin.getKlines(
-      { symbol: pair, startAt: start, endAt: end, type: granularity },
-      ({ error, data }) => {
-        if (error) return super.err(res, 500, error)
-        res.json(data)
-      }
-    )
+
+    try {
+      const { data } = await Kucoin.getKlines({
+        symbol: pair,
+        startAt: start,
+        endAt: end,
+        type: granularity,
+      })
+      res.json(data)
+    } catch (err) {
+      next(err)
+    }
   }
 
-  getCurrencyDetail(req, res, next) {
+  static async getCurrencyDetail(req, res, next) {
     const { currency } = req.query
     const { chain } = req.params
+
     if (!currency) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    Kucoin.getCurrencyDetail({ currency, chain }, ({ error, data }) => {
-      if (error) return super.err(res, 500, error)
+
+    try {
+      const { data } = await Kucoin.getCurrencyDetail({ currency, chain })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  getFiatPrice(req, res, next) {
+  static async getFiatPrice(req, res, next) {
     const { base } = req.query
     const { currencies } = req.params
+
     if (!base || !currencies) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    Kucoin.getFiatPrice({ base, currencies }, ({ error, data }) => {
-      if (error) return super.err(res, 500, error)
+
+    try {
+      const { data } = await Kucoin.getFiatPrice({ base, currencies })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 }

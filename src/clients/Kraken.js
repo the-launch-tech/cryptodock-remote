@@ -2,9 +2,11 @@ import Kraken from 'kraken-sdk'
 
 export default {
   initialize: () => {
+    const { keys } = global.config
+
     const params = {
-      SECRET: process.env.KRAKEN_API_SECRET,
-      KEY: process.env.KRAKEN_API_KEY,
+      SECRET: keys.krakenSecret,
+      KEY: keys.krakenKey,
     }
 
     return new Kraken(params)

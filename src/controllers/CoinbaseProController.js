@@ -1,366 +1,486 @@
-import Controller from './Controller'
 import CoinbasePro from '../clients/CoinbasePro'
-import exchangeMap from '../utils/exchangeMap'
 
-export default class CoinbaseProController extends Controller {
-  constructor() {
-    super()
-  }
+const { log, error } = console
+const { Errors } = global.config
 
-  getProducts(req, res, next) {
-    CoinbasePro.getProducts((err, response, data) => {
-      if (err) return super.err(res, 500, err)
+export default class CoinbaseProController {
+  static async getProducts(req, res, next) {
+    try {
+      const data = await CoinbasePro.getProducts()
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  getProductOrderBook(req, res, next) {
+  static async getProductOrderBook(req, res, next) {
     const { level } = req.params
-    if (!req.query.pair) {
-      return super.err(res, 500)
-    }
-    CoinbasePro.getProductOrderBook(
-      req.query.pair,
-      { level: level ? level : 3 },
-      (err, response, data) => {
-        if (err) return super.err(res, 500, err)
-        res.json(data)
-      }
-    )
-  }
+    const { pair } = req.query
 
-  getProductTicker(req, res, next) {
-    if (!req.query.pair) {
-      return super.err(res, 500)
+    if (!pair) {
+      return next(Errors.InvalidParameters)
     }
-    CoinbasePro.getProductTicker(req.query.pair, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
+
+    try {
+      const data = await CoinbasePro.getProductOrderBook(pair, { level: level ? level : 3 })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  getProductTrades(req, res, next) {
+  static async getProductTicker(req, res, next) {
+    const { pair } = req.query
+
+    if (!pair) {
+      return next(Errors.InvalidParameters)
+    }
+
+    try {
+      const data = await CoinbasePro.getProductTicker(pair)
+      res.json(data)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  static async getProductTrades(req, res, next) {
     const { after } = req.params
-    if (!req.query.pair) {
-      return super.err(res, 500)
+    const { pair } = req.query
+
+    if (!pair) {
+      return next(Errors.InvalidParameters)
     }
-    CoinbasePro.getProductTrades(
-      req.query.pair,
-      { after: after ? after : 0 },
-      (err, response, data) => {
-        if (err) return super.err(res, 500, err)
-        res.json(data)
-      }
-    )
+
+    try {
+      const data = await CoinbasePro.getProductTrades(pair, { after: after ? after : 0 })
+      res.json(data)
+    } catch (err) {
+      next(err)
+    }
   }
 
-  getProductHistoricRates(req, res, next) {
+  static async getProductHistoricRates(req, res, next) {
     const { granularity, start, end } = req.params
-    if (!req.query.pair) {
-      return super.err(res, 500)
+    const { pair } = req.query
+
+    if (!pair) {
+      return next(Errors.InvalidParameters)
     }
-    CoinbasePro.getProductHistoricRates(
-      req.query.pair,
-      { granularity, start, end },
-      (err, response, data) => {
-        if (err) return super.err(res, 500, err)
-        res.json(data)
-      }
-    )
-  }
 
-  getProduct24HrStats(req, res, next) {
-    if (!req.query.pair) {
-      return super.err(res, 500)
+    try {
+      const data = await CoinbasePro.getProductHistoricRates(pair, { granularity, start, end })
+      res.json(data)
+    } catch (err) {
+      next(err)
     }
-    CoinbasePro.getProduct24HrStats(req.query.pair, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
-      res.json(data)
-    })
   }
 
-  getCurrencies(req, res, next) {
-    CoinbasePro.getCurrencies((err, response, data) => {
-      if (err) return super.err(res, 500, err)
-      res.json(data)
-    })
-  }
+  static async getProduct24HrStats(req, res, next) {
+    const { pair } = req.query
 
-  getTime(req, res, next) {
-    CoinbasePro.getTime((err, response, data) => {
-      if (err) return super.err(res, 500, err)
-      res.json(data)
-    })
-  }
-
-  getCoinbaseAccounts(req, res, next) {
-    CoinbasePro.getCoinbaseAccounts((err, response, data) => {
-      if (err) return super.err(res, 500, err)
-      res.json(data)
-    })
-  }
-
-  getPaymentMethods(req, res, next) {
-    CoinbasePro.getPaymentMethods((err, response, data) => {
-      if (err) return super.err(res, 500, err)
-      res.json(data)
-    })
-  }
-
-  getAccounts(req, res, next) {
-    CoinbasePro.getAccounts((err, response, data) => {
-      if (err) return super.err(res, 500, err)
-      res.json(data)
-    })
-  }
-
-  getAccount(req, res, next) {
-    CoinbasePro.getAccount(req.query.accountID, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
-      res.json(data)
-    })
-  }
-
-  getAccountHistory(req, res, next) {
-    const { before } = req.params
-    const args = {}
-    if (before) {
-      args['before'] = before
+    if (!pair) {
+      return next(Errors.InvalidParameters)
     }
-    CoinbasePro.getAccountHistory(req.query.accountID, args, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
-      res.json(data)
-    })
-  }
 
-  getAccountTransfers(req, res, next) {
-    const { before } = req.params
-    const args = {}
-    if (before) {
-      args['before'] = before
+    try {
+      const data = await CoinbasePro.getProduct24HrStats(pair)
+      res.json(data)
+    } catch (err) {
+      next(err)
     }
-    CoinbasePro.getAccountTransfers(req.query.accountID, args, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
-      res.json(data)
-    })
   }
 
-  getAccountHolds(req, res, next) {
-    const { before } = req.params
-    const args = {}
-    if (before) {
-      args['before'] = before
+  static async getCurrencies(req, res, next) {
+    try {
+      const data = await CoinbasePro.getCurrencies()
+      res.json(data)
+    } catch (err) {
+      next(err)
     }
-    CoinbasePro.getAccountHolds(req.query.accountID, args, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
-      res.json(data)
-    })
   }
 
-  buy(req, res, next) {
+  static async getTime(req, res, next) {
+    try {
+      const data = await CoinbasePro.getTime()
+      res.json(data)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  static async getCoinbaseAccounts(req, res, next) {
+    try {
+      const data = await CoinbasePro.getCoinbaseAccounts()
+      res.json(data)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  static async getPaymentMethods(req, res, next) {
+    try {
+      const data = await CoinbasePro.getPaymentMethods()
+      res.json(data)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  static async getAccounts(req, res, next) {
+    try {
+      const data = await CoinbasePro.getAccounts()
+      res.json(data)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  static async getAccount(req, res, next) {
+    const { accountID } = req.query
+
+    if (!accountID) {
+      return next(Errors.InvalidParameters)
+    }
+
+    try {
+      const data = await CoinbasePro.getAccount(accountID)
+      res.json(data)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  static async getAccountHistory(req, res, next) {
+    const args = req.params
+    const { accountID } = req.query
+
+    if (!accountID) {
+      return next(Errors.InvalidParameters)
+    }
+
+    try {
+      const data = await CoinbasePro.getAccountHistory(accountID, args)
+      res.json(data)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  static async getAccountTransfers(req, res, next) {
+    const args = req.params
+    const { accountID } = req.query
+
+    if (!accountID) {
+      return next(Errors.InvalidParameters)
+    }
+
+    try {
+      const data = await CoinbasePro.getAccountTransfers(accountID, args)
+      res.json(data)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  static async getAccountHolds(req, res, next) {
+    const args = req.params
+    const { accountID } = req.query
+
+    if (!accountID) {
+      return next(Errors.InvalidParameters)
+    }
+
+    try {
+      const data = await CoinbasePro.getAccountHolds(accountID, args)
+      res.json(data)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  static async buy(req, res, next) {
     const { price, size, product_id } = req.params
+
     if (!price || !size || !product_id) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    CoinbasePro.buy(req.params, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
+
+    try {
+      const data = await CoinbasePro.buy({ price, size, product_id })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  sell(req, res, next) {
+  static async sell(req, res, next) {
     const { price, size, product_id } = req.params
+
     if (!price || !size || !product_id) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    CoinbasePro.sell(req.params, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
+
+    try {
+      const data = await CoinbasePro.sell({ price, size, product_id })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  placeOrder(req, res, next) {
+  static async placeOrder(req, res, next) {
     const { price, size, product_id, side } = req.params
+
     if (!price || !size || !product_id || !side) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    CoinbasePro.placeOrder(req.params, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
-      res.json(data)
-    })
-  }
 
-  cancelOrder(req, res, next) {
-    if (!req.query.orderID) {
-      return super.err(res, 500)
+    try {
+      const data = await CoinbasePro.placeOrder({ price, size, product_id, side })
+      res.json(data)
+    } catch (err) {
+      next(err)
     }
-    CoinbasePro.cancelOrder(req.query.orderID, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
-      res.json(data)
-    })
   }
 
-  cancelOrders(req, res, next) {
-    CoinbasePro.cancelOrders((err, response, data) => {
-      if (err) return super.err(res, 500, err)
-      res.json(data)
-    })
-  }
+  static async cancelOrder(req, res, next) {
+    const { orderID } = req.query
 
-  cancelAllOrders(req, res, next) {
-    if (!req.query.pair) {
-      return super.err(res, 500)
+    if (!orderID) {
+      return next(Errors.InvalidParameters)
     }
-    CoinbasePro.cancelAllOrders(req.query.pair, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
-      res.json(data)
-    })
-  }
 
-  getOrders(req, res, next) {
-    CoinbasePro.getOrders(req.params, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
+    try {
+      const data = await CoinbasePro.cancelOrder(orderID)
       res.json(data)
-    })
-  }
-
-  getOrder(req, res, next) {
-    if (!req.query.orderID) {
-      return super.err(res, 500)
+    } catch (err) {
+      next(err)
     }
-    CoinbasePro.getOrder(req.query.orderID, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
-      res.json(data)
-    })
   }
 
-  getFills(req, res, next) {
-    if (!req.query.pair) {
-      return super.err(res, 500)
+  static async cancelOrders(req, res, next) {
+    try {
+      const data = await CoinbasePro.cancelOrders()
+      res.json(data)
+    } catch (err) {
+      next(err)
     }
-    CoinbasePro.getFills(req.query.pair, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
-      res.json(data)
-    })
   }
 
-  getFundings(req, res, next) {
-    CoinbasePro.getFundings((err, response, data) => {
-      if (err) return super.err(res, 500, err)
+  static async cancelAllOrders(req, res, next) {
+    const { pair } = req.query
+
+    if (!pair) {
+      return next(Errors.InvalidParameters)
+    }
+
+    try {
+      const data = await CoinbasePro.cancelAllOrders(pair)
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  repay(req, res, next) {
+  static async getOrders(req, res, next) {
+    try {
+      const data = await CoinbasePro.getOrders(req.params)
+      res.json(data)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  static async getOrder(req, res, next) {
+    const { orderID } = req.query
+
+    if (!orderID) {
+      return next(Errors.InvalidParameters)
+    }
+
+    try {
+      const data = await CoinbasePro.getOrder(orderID)
+      res.json(data)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  static async getFills(req, res, next) {
+    const { pair } = req.query
+
+    if (!pair) {
+      return next(Errors.InvalidParameters)
+    }
+
+    try {
+      const data = await CoinbasePro.getFills(pair)
+      res.json(data)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  static async getFundings(req, res, next) {
+    try {
+      const data = await CoinbasePro.getFundings(pair)
+      res.json(data)
+    } catch (err) {
+      next(err)
+    }
+  }
+
+  static async repay(req, res, next) {
     const { amount, currency } = req.params
+
     if (!amount || !currency) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    CoinbasePro.repay(req.params, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
+
+    try {
+      const data = await CoinbasePro.repay({ amount, currency })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  marginTransfer(req, res, next) {
+  static async marginTransfer(req, res, next) {
     const { margin_profile_id, type, amount, currency } = req.params
+
     if (!margin_profile_id || !type || !amount || !currency) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    CoinbasePro.marginTransfer(req.params, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
+
+    try {
+      const data = await CoinbasePro.marginTransfer({ margin_profile_id, type, amount, currency })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  closePosition(req, res, next) {
-    CoinbasePro.closePosition(req.params, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
+  static async closePosition(req, res, next) {
+    try {
+      const data = await CoinbasePro.closePosition(req.params)
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  convert(req, res, next) {
+  static async convert(req, res, next) {
     const { from, to, amount } = req.params
+
     if (!from || !to || !amount) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    CoinbasePro.convert(req.params, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
+
+    try {
+      const data = await CoinbasePro.convert({ from, to, amount })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  deposit(req, res, next) {
+  static async deposit(req, res, next) {
     const { amount, currency, coinbase_account_id } = req.params
+
     if (!amount || !currency || !coinbase_account_id) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    CoinbasePro.deposit(req.params, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
+
+    try {
+      const data = await CoinbasePro.deposit({ amount, currency, coinbase_account_id })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  withdraw(req, res, next) {
+  static async withdraw(req, res, next) {
     const { amount, currency, coinbase_account_id } = req.params
+
     if (!amount || !currency || !coinbase_account_id) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    CoinbasePro.withdraw(req.params, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
+
+    try {
+      const data = await CoinbasePro.withdraw({ amount, currency, coinbase_account_id })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  depositCrypto(req, res, next) {
+  static async depositCrypto(req, res, next) {
     const { currency } = req.params
+
     if (!currency) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    CoinbasePro.depositCrypto(req.params, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
+
+    try {
+      const data = await CoinbasePro.depositCrypto(req.params)
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  withdrawCrypto(req, res, next) {
+  static async withdrawCrypto(req, res, next) {
     const { amount, currency, crypto_address } = req.params
+
     if (!amount || !currency || !crypto_address) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    CoinbasePro.withdrawCrypto(req.params, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
+
+    try {
+      const data = await CoinbasePro.withdrawCrypto({ amount, currency, crypto_address })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  depositPayment(req, res, next) {
+  static async depositPayment(req, res, next) {
     const { amount, currency, payment_method_id } = req.params
+
     if (!amount || !currency || !payment_method_id) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    CoinbasePro.depositPayment(req.params, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
+
+    try {
+      const data = await CoinbasePro.depositPayment({ amount, currency, payment_method_id })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  withdrawPayment(req, res, next) {
+  static async withdrawPayment(req, res, next) {
     const { amount, currency, payment_method_id } = req.params
+
     if (!amount || !currency || !payment_method_id) {
-      return super.err(res, 500)
+      return next(Errors.InvalidParameters)
     }
-    CoinbasePro.withdrawPayment(req.params, (err, response, data) => {
-      if (err) return super.err(res, 500, err)
+
+    try {
+      const data = await CoinbasePro.withdrawPayment({ amount, currency, payment_method_id })
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 
-  getTrailingVolume(req, res, next) {
-    CoinbasePro.getTrailingVolume((err, response, data) => {
-      if (err) return super.err(res, 500, err)
+  static async getTrailingVolume(req, res, next) {
+    try {
+      const data = await CoinbasePro.getTrailingVolume()
       res.json(data)
-    })
+    } catch (err) {
+      next(err)
+    }
   }
 }

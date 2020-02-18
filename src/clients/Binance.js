@@ -2,9 +2,11 @@ import Binance from 'node-binance-us-api'
 
 export default {
   initialize: () => {
+    const { keys } = global.config
+
     const params = {
-      APIKEY: process.env.BINANCE_API_KEY,
-      APISECRET: process.env.BINANCE_API_SECRET,
+      APIKEY: keys.binanceKey,
+      APISECRET: keys.binanceSecret,
       useServerTime: true,
     }
 

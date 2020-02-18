@@ -2,9 +2,11 @@ import Kucoin from 'kucoin-sdk'
 
 export default {
   initialize: () => {
+    const { keys } = global.config
+
     const params = {
-      SECRET: process.env.KUCOIN_API_SECRET,
-      KEY: process.env.KUCOIN_API_KEY,
+      SECRET: keys.kucoinSecret,
+      KEY: keys.kucoinKey,
     }
 
     return new Kucoin(params)
