@@ -1,21 +1,19 @@
-import TickersController from '../controllers/tickers/index'
+import TickersController from '../controllers/TickersController'
 import checkRoles from '../middleware/checkRoles'
 import limitRates from '../middleware/limitRates'
 
 const { log, error } = console
 
-export default CryptoDock => {
-  log('tickerRoutes')
-
+export default SubApp => {
   const { Roles, Rates } = global.config
 
-  CryptoDock.get(
+  SubApp.get(
     `/`,
     checkRoles([Roles.Builder, Roles.Api]),
     limitRates(Rates.Basic),
     TickersController.getTickers
   )
-  CryptoDock.post(
+  SubApp.post(
     `/`,
     checkRoles([Roles.Builder]),
     limitRates(Rates.Basic),

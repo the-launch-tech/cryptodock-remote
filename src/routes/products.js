@@ -1,21 +1,19 @@
-import ProductsController from '../controllers/products/index'
+import ProductsController from '../controllers/ProductsController'
 import checkRoles from '../middleware/checkRoles'
 import limitRates from '../middleware/limitRates'
 
 const { log, error } = console
 
-export default CryptoDock => {
-  log('productRoutes')
-
+export default SubApp => {
   const { Roles, Rates } = global.config
 
-  CryptoDock.get(
+  SubApp.get(
     `/`,
     checkRoles([Roles.Builder, Roles.Api]),
     limitRates(Rates.Basic),
     ProductsController.getProducts
   )
-  CryptoDock.post(
+  SubApp.post(
     `/`,
     checkRoles([Roles.Builder]),
     limitRates(Rates.Basic),

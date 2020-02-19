@@ -1,7 +1,6 @@
 import Kline from '../models/Kline'
 
 const { log, error } = console
-const { Errors } = global.config
 
 export default class KlinesController {
   static async getKlines(req, res, next) {
@@ -14,6 +13,7 @@ export default class KlinesController {
   }
 
   static async saveKlines(req, res, next) {
+    const { Errors } = global.config
     const { klines, exchangeId, productId, map } = req.body
 
     if (!klines || !exchangeId || !productId || !map) {

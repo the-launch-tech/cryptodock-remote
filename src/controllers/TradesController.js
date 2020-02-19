@@ -1,7 +1,6 @@
 import Trade from '../models/Trade'
 
 const { log, error } = console
-const { Errors } = global.config
 
 export default class TradesController {
   static async getTrades(req, res, next) {
@@ -14,6 +13,7 @@ export default class TradesController {
   }
 
   static async saveTrades(req, res, next) {
+    const { Errors } = global.config
     const { trades, exchangeId, productId, map } = req.body
 
     if (!trades || !exchangeId || !productId || !map) {

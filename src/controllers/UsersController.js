@@ -3,15 +3,15 @@ import bcrypt from 'bcryptjs'
 import User from '../models/User'
 
 const { log, error } = console
-const { Errors } = global.config
 
 export default class UsersController {
   static current(req, res) {
-    res.status(200).send(req.user)
+    return res.status(200).send(req.user)
   }
 
   static async single(req, res, next) {
     try {
+      const { Errors } = global.config
       const user = await User.single({ key: 'id', value: req.params.id })
       if (!user) {
         return next(Errors.ResourceNotFound)
@@ -25,6 +25,7 @@ export default class UsersController {
 
   static async register(req, res, next) {
     try {
+      const { Errors } = global.config
       const user = await User.single({ key: 'email', value: req.body.email })
       if (user) {
         return next(Errors.UserExists)
@@ -41,6 +42,7 @@ export default class UsersController {
 
   static async login(req, res, next) {
     try {
+      const { Errors } = global.config
       const { secret, cookie } = global.config.srv
       const user = await User.single({ key: 'email', value: req.body.email })
       const match = await bcrypt.compare(req.body.password, user.password)

@@ -1,25 +1,21 @@
-import users from './local'
-import exchanges from './kucoin'
-import products from './coinbasepro'
-import klines from './local'
-import tickers from './kucoin'
-import trades from './coinbasepro'
-import coinbasepro from './kucoin'
-import kucoin from './coinbasepro'
+import users from './users'
+import exchanges from './exchanges'
+import products from './products'
+import klines from './klines'
+import tickers from './tickers'
+import trades from './trades'
+import coinbasepro from './coinbasepro'
+import kucoin from './kucoin'
 
 const { log, error } = console
 
-export default CryptoDock => {
-  log('routers')
-
-  const { version } = global.config.srv
-
-  CryptoDock.use(`/${version}/users`, users(CryptoDock))
-  CryptoDock.use(`/${version}/exchanges`, exchanges(CryptoDock))
-  CryptoDock.use(`/${version}/products`, products(CryptoDock))
-  CryptoDock.use(`/${version}/klines`, klines(CryptoDock))
-  CryptoDock.use(`/${version}/tickers`, tickers(CryptoDock))
-  CryptoDock.use(`/${version}/trades`, trades(CryptoDock))
-  CryptoDock.use(`/${version}/coinbasepro`, coinbasepro(CryptoDock))
-  CryptoDock.use(`/${version}/kucoin`, kucoin(CryptoDock))
-}
+export default [
+  { path: 'users', routes: users },
+  { path: 'exchanges', routes: exchanges },
+  { path: 'products', routes: products },
+  { path: 'klines', routes: klines },
+  { path: 'tickers', routes: tickers },
+  { path: 'trades', routes: trades },
+  { path: 'coinbasepro', routes: coinbasepro },
+  { path: 'kucoin', routes: kucoin },
+]

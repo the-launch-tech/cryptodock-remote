@@ -1,7 +1,6 @@
 import Kucoin from '../clients/Kucoin'
 
 const { log, error } = console
-const { Errors } = global.config
 
 export default class KucoinController {
   static async getCurrencies(req, res, next) {
@@ -14,6 +13,7 @@ export default class KucoinController {
   }
 
   static async getSymbolsList(req, res, next) {
+    const { Errors } = global.config
     const { market } = req.params
 
     if (!market) {
@@ -29,6 +29,7 @@ export default class KucoinController {
   }
 
   static async getTicker(req, res, next) {
+    const { Errors } = global.config
     const { pair } = req.query
 
     if (!pair) {
@@ -53,6 +54,7 @@ export default class KucoinController {
   }
 
   static async get24HourStats(req, res, next) {
+    const { Errors } = global.config
     const { pair } = req.query
 
     if (!pair) {
@@ -77,6 +79,7 @@ export default class KucoinController {
   }
 
   static async getPartOrderBook(req, res, next) {
+    const { Errors } = global.config
     const { pair } = req.query
     const { depth } = req.params
 
@@ -93,6 +96,7 @@ export default class KucoinController {
   }
 
   static async getFullOrderBookAggregated(req, res, next) {
+    const { Errors } = global.config
     const { pair } = req.query
     const { depth } = req.params
 
@@ -109,6 +113,7 @@ export default class KucoinController {
   }
 
   static async getFullOrderBookAtomic(req, res, next) {
+    const { Errors } = global.config
     const { pair } = req.query
 
     if (!pair) {
@@ -124,6 +129,7 @@ export default class KucoinController {
   }
 
   static async getTradeHistories(req, res, next) {
+    const { Errors } = global.config
     const { pair } = req.query
 
     if (!pair) {
@@ -139,6 +145,7 @@ export default class KucoinController {
   }
 
   static async getKlines(req, res, next) {
+    const { Errors } = global.config
     const { pair } = req.query
     const { start, end, granularity } = req.params
 
@@ -160,6 +167,7 @@ export default class KucoinController {
   }
 
   static async getCurrencyDetail(req, res, next) {
+    const { Errors } = global.config
     const { currency } = req.query
     const { chain } = req.params
 
@@ -176,6 +184,7 @@ export default class KucoinController {
   }
 
   static async getFiatPrice(req, res, next) {
+    const { Errors } = global.config
     const { base } = req.query
     const { currencies } = req.params
 

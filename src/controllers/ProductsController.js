@@ -1,7 +1,6 @@
 import Product from '../models/Product'
 
 const { log, error } = console
-const { Errors } = global.config
 
 export default class ProductsController {
   static async getProducts(req, res, next) {
@@ -14,6 +13,7 @@ export default class ProductsController {
   }
 
   static async saveProducts(req, res, next) {
+    const { Errors } = global.config
     const { products, exchangeId, map } = req.body
 
     if (!products || !exchangeId || !map) {

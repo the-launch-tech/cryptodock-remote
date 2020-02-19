@@ -33,7 +33,7 @@ export default function() {
       host: parseVar('DB_HOST'),
     },
     srv: {
-      post: parseVar('PORT'),
+      port: parseVar('PORT'),
       version: parseVar('VERSION'),
       secret: parseVar('SECRET'),
       cookie: parseVar('COOKIE'),

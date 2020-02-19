@@ -1,21 +1,19 @@
-import ExchangesController from '../controllers/exchanges/index'
+import ExchangesController from '../controllers/ExchangesController'
 import checkRoles from '../middleware/checkRoles'
 import limitRates from '../middleware/limitRates'
 
 const { log, error } = console
 
-export default Cd => {
-  log('exchageRoutes')
-
+export default SubApp => {
   const { Roles, Rates } = global.config
 
-  CryptoDock.get(
+  SubApp.get(
     `/`,
     checkRoles([Roles.Builder, Roles.Api]),
     limitRates(Rates.Basic),
     ExchangesController.getExchanges
   )
-  CryptoDock.post(
+  SubApp.post(
     `/`,
     checkRoles([Roles.Builder]),
     limitRates(Rates.Basic),

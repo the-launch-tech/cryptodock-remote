@@ -1,21 +1,19 @@
-import KlinesController from '../controllers/klines/index'
+import KlinesController from '../controllers/KlinesController'
 import checkRoles from '../middleware/checkRoles'
 import limitRates from '../middleware/limitRates'
 
 const { log, error } = console
 
-export default CryptoDock => {
-  log('klineRoutes')
-
+export default SubApp => {
   const { Roles, Rates } = global.config
 
-  CryptoDock.get(
+  SubApp.get(
     `/`,
     checkRoles([Roles.Builder, Roles.Api]),
     limitRates(Rates.Basic),
     KlinesController.getKlines
   )
-  CryptoDock.post(
+  SubApp.post(
     `/`,
     checkRoles([Roles.Builder]),
     limitRates(Rates.Basic),

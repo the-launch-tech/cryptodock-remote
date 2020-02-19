@@ -1,7 +1,6 @@
 import Exchange from '../models/Exchange'
 
 const { log, error } = console
-const { Errors } = global.config
 
 export default class KlinesController {
   static async getExchanges(req, res, next) {
@@ -14,6 +13,7 @@ export default class KlinesController {
   }
 
   static async saveExchange(req, res, next) {
+    const { Errors } = global.config
     const { name, label } = req.body
 
     if (!name || !label) {

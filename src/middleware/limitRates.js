@@ -1,13 +1,16 @@
-export default function(defaultRate, req, res, next) {
+const { log, error } = console
+
+export default function(defaultRate) {
+  let limiter
   let limit = defaultRate
 
-  if (req.auth && req.auth.rate_limit) {
-    limit = req.auth.rate_limit
-  }
+  return function(req, res, next) {
+    if (req.auth && req.auth.rate_limit) {
+      limit = req.auth.rate_limit
+    }
 
-  if (global.RateLimiter[limit]) {
-    limiter = global.RateLimiter[limit]
-  }
+    const limiter = global.RateLimiter[limit]
 
-  return limiter
+    return limiter(req, res, next)
+  }
 }

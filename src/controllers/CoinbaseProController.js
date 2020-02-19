@@ -1,7 +1,6 @@
 import CoinbasePro from '../clients/CoinbasePro'
 
 const { log, error } = console
-const { Errors } = global.config
 
 export default class CoinbaseProController {
   static async getProducts(req, res, next) {
@@ -14,6 +13,7 @@ export default class CoinbaseProController {
   }
 
   static async getProductOrderBook(req, res, next) {
+    const { Errors } = global.config
     const { level } = req.params
     const { pair } = req.query
 
@@ -30,6 +30,7 @@ export default class CoinbaseProController {
   }
 
   static async getProductTicker(req, res, next) {
+    const { Errors } = global.config
     const { pair } = req.query
 
     if (!pair) {
@@ -45,6 +46,7 @@ export default class CoinbaseProController {
   }
 
   static async getProductTrades(req, res, next) {
+    const { Errors } = global.config
     const { after } = req.params
     const { pair } = req.query
 
@@ -61,6 +63,7 @@ export default class CoinbaseProController {
   }
 
   static async getProductHistoricRates(req, res, next) {
+    const { Errors } = global.config
     const { granularity, start, end } = req.params
     const { pair } = req.query
 
@@ -77,6 +80,7 @@ export default class CoinbaseProController {
   }
 
   static async getProduct24HrStats(req, res, next) {
+    const { Errors } = global.config
     const { pair } = req.query
 
     if (!pair) {
@@ -137,6 +141,7 @@ export default class CoinbaseProController {
   }
 
   static async getAccount(req, res, next) {
+    const { Errors } = global.config
     const { accountID } = req.query
 
     if (!accountID) {
@@ -152,6 +157,7 @@ export default class CoinbaseProController {
   }
 
   static async getAccountHistory(req, res, next) {
+    const { Errors } = global.config
     const args = req.params
     const { accountID } = req.query
 
@@ -168,6 +174,7 @@ export default class CoinbaseProController {
   }
 
   static async getAccountTransfers(req, res, next) {
+    const { Errors } = global.config
     const args = req.params
     const { accountID } = req.query
 
@@ -184,6 +191,7 @@ export default class CoinbaseProController {
   }
 
   static async getAccountHolds(req, res, next) {
+    const { Errors } = global.config
     const args = req.params
     const { accountID } = req.query
 
@@ -200,6 +208,7 @@ export default class CoinbaseProController {
   }
 
   static async buy(req, res, next) {
+    const { Errors } = global.config
     const { price, size, product_id } = req.params
 
     if (!price || !size || !product_id) {
@@ -215,6 +224,7 @@ export default class CoinbaseProController {
   }
 
   static async sell(req, res, next) {
+    const { Errors } = global.config
     const { price, size, product_id } = req.params
 
     if (!price || !size || !product_id) {
@@ -230,6 +240,7 @@ export default class CoinbaseProController {
   }
 
   static async placeOrder(req, res, next) {
+    const { Errors } = global.config
     const { price, size, product_id, side } = req.params
 
     if (!price || !size || !product_id || !side) {
@@ -245,6 +256,7 @@ export default class CoinbaseProController {
   }
 
   static async cancelOrder(req, res, next) {
+    const { Errors } = global.config
     const { orderID } = req.query
 
     if (!orderID) {
@@ -269,6 +281,7 @@ export default class CoinbaseProController {
   }
 
   static async cancelAllOrders(req, res, next) {
+    const { Errors } = global.config
     const { pair } = req.query
 
     if (!pair) {
@@ -293,6 +306,7 @@ export default class CoinbaseProController {
   }
 
   static async getOrder(req, res, next) {
+    const { Errors } = global.config
     const { orderID } = req.query
 
     if (!orderID) {
@@ -308,6 +322,7 @@ export default class CoinbaseProController {
   }
 
   static async getFills(req, res, next) {
+    const { Errors } = global.config
     const { pair } = req.query
 
     if (!pair) {
@@ -332,6 +347,7 @@ export default class CoinbaseProController {
   }
 
   static async repay(req, res, next) {
+    const { Errors } = global.config
     const { amount, currency } = req.params
 
     if (!amount || !currency) {
@@ -347,6 +363,7 @@ export default class CoinbaseProController {
   }
 
   static async marginTransfer(req, res, next) {
+    const { Errors } = global.config
     const { margin_profile_id, type, amount, currency } = req.params
 
     if (!margin_profile_id || !type || !amount || !currency) {
@@ -371,6 +388,7 @@ export default class CoinbaseProController {
   }
 
   static async convert(req, res, next) {
+    const { Errors } = global.config
     const { from, to, amount } = req.params
 
     if (!from || !to || !amount) {
@@ -386,6 +404,7 @@ export default class CoinbaseProController {
   }
 
   static async deposit(req, res, next) {
+    const { Errors } = global.config
     const { amount, currency, coinbase_account_id } = req.params
 
     if (!amount || !currency || !coinbase_account_id) {
@@ -401,6 +420,7 @@ export default class CoinbaseProController {
   }
 
   static async withdraw(req, res, next) {
+    const { Errors } = global.config
     const { amount, currency, coinbase_account_id } = req.params
 
     if (!amount || !currency || !coinbase_account_id) {
@@ -416,6 +436,7 @@ export default class CoinbaseProController {
   }
 
   static async depositCrypto(req, res, next) {
+    const { Errors } = global.config
     const { currency } = req.params
 
     if (!currency) {
@@ -431,6 +452,7 @@ export default class CoinbaseProController {
   }
 
   static async withdrawCrypto(req, res, next) {
+    const { Errors } = global.config
     const { amount, currency, crypto_address } = req.params
 
     if (!amount || !currency || !crypto_address) {
@@ -446,6 +468,7 @@ export default class CoinbaseProController {
   }
 
   static async depositPayment(req, res, next) {
+    const { Errors } = global.config
     const { amount, currency, payment_method_id } = req.params
 
     if (!amount || !currency || !payment_method_id) {
@@ -461,6 +484,7 @@ export default class CoinbaseProController {
   }
 
   static async withdrawPayment(req, res, next) {
+    const { Errors } = global.config
     const { amount, currency, payment_method_id } = req.params
 
     if (!amount || !currency || !payment_method_id) {

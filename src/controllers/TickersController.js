@@ -1,7 +1,6 @@
 import Ticker from '../models/Ticker'
 
 const { log, error } = console
-const { Errors } = global.config
 
 export default class TickersController {
   static async getTickers(req, res, next) {
@@ -14,6 +13,7 @@ export default class TickersController {
   }
 
   static async saveTickers(req, res, next) {
+    const { Errors } = global.config
     const { tickers, exchangeId, productId, map } = req.body
 
     if (!tickers || !exchangeId || !productId || !map) {

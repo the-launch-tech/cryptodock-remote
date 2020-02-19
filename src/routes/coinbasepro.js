@@ -1,225 +1,223 @@
-import CoinbaseProController from '../controllers/coinbasepro/index'
+import CoinbaseProController from '../controllers/CoinbaseProController'
 import checkRoles from '../middleware/checkRoles'
 import limitRates from '../middleware/limitRates'
 
 const { log, error } = console
 
-export default CryptoDock => {
-  log('coinbaseproRoutes')
-
+export default SubApp => {
   const { Roles, Rates } = global.config
 
-  CryptoDock.get(
+  SubApp.get(
     `/public/products`,
     checkRoles([Roles.Builder, Roles.Api]),
     limitRates(Rates.Basic),
     CoinbaseProController.getProducts
   )
-  CryptoDock.get(
+  SubApp.get(
     `/public/products/:pair/orderbook`,
     checkRoles([Roles.Builder, Roles.Api]),
     limitRates(Rates.Basic),
     CoinbaseProController.getProductOrderBook
   )
-  CryptoDock.get(
+  SubApp.get(
     `/public/products/:pair/ticker`,
     checkRoles([Roles.Builder, Roles.Api]),
     limitRates(Rates.Basic),
     CoinbaseProController.getProductTicker
   )
-  CryptoDock.get(
+  SubApp.get(
     `/public/products/:pair/trades`,
     checkRoles([Roles.Builder, Roles.Api]),
     limitRates(Rates.Basic),
     CoinbaseProController.getProductTrades
   )
-  CryptoDock.get(
+  SubApp.get(
     `/public/products/:pair/historic`,
     checkRoles([Roles.Builder, Roles.Api]),
     limitRates(Rates.Basic),
     CoinbaseProController.getProductHistoricRates
   )
-  CryptoDock.get(
+  SubApp.get(
     `/public/products/:pair/24_hours`,
     checkRoles([Roles.Builder, Roles.Api]),
     limitRates(Rates.Basic),
     CoinbaseProController.getProduct24HrStats
   )
-  CryptoDock.get(
+  SubApp.get(
     `/public/public/currencies`,
     checkRoles([Roles.Builder, Roles.Api]),
     limitRates(Rates.Basic),
     CoinbaseProController.getCurrencies
   )
-  CryptoDock.get(
+  SubApp.get(
     `/public/time`,
     checkRoles([Roles.Builder, Roles.Api]),
     limitRates(Rates.Basic),
     CoinbaseProController.getTime
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/accounts/coinbase`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.getCoinbaseAccounts
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/accounts/payment_methods`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.getPaymentMethods
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/accounts`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.getAccounts
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/accounts/:accountID`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.getAccount
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/accounts/:accountID/history`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.getAccountHistory
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/accounts/:accountID/transfers`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.getAccountTransfers
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/accounts/:accountID/holds`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.getAccountHolds
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/buy/:pair`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.buy
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/sell/:pair`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.sell
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/orders/place/:pair`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.placeOrder
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/orders/cancel/:orderID`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.cancelOrder
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/orders/cancel/open`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.cancelOrders
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/orders/cancel/:pair`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.cancelAllOrders
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/orders`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.getOrders
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/orders/:orderID`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.getOrder
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/fills/:pair`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.getFills
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/fundings`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.getFundings
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/repay`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.repay
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/margin_transfer`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.marginTransfer
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/close_position`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.closePosition
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/convert`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.convert
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/deposit`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.deposit
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/withdraw`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.withdraw
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/deposit_crypto`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.depositCrypto
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/withdraw_crpyo`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.withdrawCrypto
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/deposit_payment`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.depositPayment
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/withdraw_payment`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
     CoinbaseProController.withdrawPayment
   )
-  CryptoDock.get(
+  SubApp.get(
     `/auth/trailing_volume`,
     checkRoles([Roles.Builder, Roles.AuthApi]),
     limitRates(Rates.Basic),
