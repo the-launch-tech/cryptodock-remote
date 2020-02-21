@@ -1,4 +1,8 @@
+const { log, error } = console
+
 export default async function(string, binding, type) {
+  log(string)
+
   try {
     const data = await global.Conn.asyncQuery(string, binding)
 

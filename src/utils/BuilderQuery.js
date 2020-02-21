@@ -52,13 +52,17 @@ export default class BuilderQuery {
         : tableMap[table].fields.map(({ field, as }) => returnField(table, field, as))
     }
 
-    const mainFields = mapTableFields(this.table, this.fields)
+    const mainFields = mapTableFields(this.table, this.fields).join(',')
 
     const secondaryFields = this.hasJoins()
-      ? this.joins.map(({ table, fields }) => mapTableFields(table, fields))
-      : []
+      ? this.joins.map(({ table, fields }) => mapTableFields(table, fields)).join(',')
+      : ''
 
-    return [...mainFields, ...secondaryFields].join(', ')
+    if (secondaryFields) {
+      mainFields += ', ' + secondaryFields
+    }
+
+    return mainFields
   }
 
   buildFrom() {
@@ -151,7 +155,7 @@ export default class BuilderQuery {
     return returnOrder(order)
   }
 
-  buildPagination({ page, pageSize }) {
+  buildPagination() {
     const returnPagination = (offset, count) => {
       return ` LIMIT ${parseInt(offset)}, ${parseInt(count)} `
     }
@@ -175,11 +179,11 @@ export default class BuilderQuery {
       this.buildOrderBy(),
       this.buildOrder(),
       this.buildPagination(),
-    ].join()
+    ].join(' ')
   }
 
   getBinding() {
-    return this.constraints.map(constraint => constraint.key)
+    return this.constraints.map(constraint => constraint.value)
   }
 
   async make() {

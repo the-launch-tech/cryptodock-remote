@@ -6,7 +6,7 @@ export default class KlinesController {
   static async getKlines(req, res, next) {
     try {
       const klines = await Kline.get(req.query)
-      return klines
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -14,7 +14,7 @@ export default class KlinesController {
 
   static async saveKlines(req, res, next) {
     const { Errors } = global.config
-    const { klines, exchangeId, productId, map } = req.body
+    const { klines, exchangeId, productId, map } = req.body.klines
 
     if (!klines || !exchangeId || !productId || !map) {
       return next(Errors.InvalidParameters)
@@ -26,7 +26,7 @@ export default class KlinesController {
       }
 
       const ids = Promise.all(loopItems(klines))
-      res.json(ids)
+      res.status(200).json(ids)
     } catch (err) {
       next(err)
     }

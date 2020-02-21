@@ -27,6 +27,18 @@ program
   })
 
 program
+  .command('confirmToken <token>')
+  .description('Create new token for API use')
+  .action(async token => {
+    try {
+      const decodedToken = await jwt.verify(token, srv.secret)
+      log(chalk.green('Decoded Token (token=' + token + '): '), decodedToken)
+    } catch (err) {
+      error(err)
+    }
+  })
+
+program
   .command('addvar <newKey> <newValue>')
   .description('Add credentials for CryptoDockRemote utilities')
   .action((newKey, newValue) => {

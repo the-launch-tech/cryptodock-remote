@@ -20,7 +20,7 @@ export default roles => {
       return next()
     }
 
-    const token = req.headers['X-Cd-Token']
+    const token = req.headers['x-cd-token']
 
     if (!token) {
       return next(Errors.TokenError)

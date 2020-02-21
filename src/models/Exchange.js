@@ -22,6 +22,7 @@ export default class Exchange {
   }
 
   static async save({ name, label }) {
+    log({ name, label })
     try {
       return await query('INSERT INTO exchanges (name, label) values (?, ?)', [name, label], 'save')
     } catch (err) {

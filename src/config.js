@@ -1,4 +1,4 @@
-export default function() {
+module.exports = function() {
   const parseVar = slug => {
     return process.env.NODE_ENV === 'production' ? process.env[slug] : process.env['DEV_' + slug]
   }

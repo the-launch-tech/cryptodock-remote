@@ -11,7 +11,7 @@ export default class RateLimiter {
   initBasic() {
     return RateLimit({
       windowMs: 60 * 1000,
-      max: 5,
+      max: 500,
       keyGenerator: (req, res) => {
         return req.auth ? req.auth.token : req.ip
       },
@@ -24,7 +24,7 @@ export default class RateLimiter {
   initPro() {
     return RateLimit({
       windowMs: 60 * 1000,
-      max: 25,
+      max: 500,
       keyGenerator: (req, res) => {
         return req.auth ? req.auth.token : req.ip
       },
@@ -37,7 +37,7 @@ export default class RateLimiter {
   initPremium() {
     return RateLimit({
       windowMs: 60 * 1000,
-      max: 50,
+      max: 500,
       keyGenerator: (req, res) => {
         return req.auth ? req.auth.token : req.ip
       },

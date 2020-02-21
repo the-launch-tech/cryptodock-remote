@@ -6,7 +6,7 @@ export default class ProductsController {
   static async getProducts(req, res, next) {
     try {
       const data = await Product.get(req.query)
-      return data
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -14,7 +14,7 @@ export default class ProductsController {
 
   static async saveProducts(req, res, next) {
     const { Errors } = global.config
-    const { products, exchangeId, map } = req.body
+    const { products, exchangeId, map } = req.body.products
 
     if (!products || !exchangeId || !map) {
       return next(Errors.InvalidParameters)
@@ -22,11 +22,12 @@ export default class ProductsController {
 
     try {
       const loopItems = ps => {
-        return ps.map(async p => await Product.save({ product: p, exchangeId, map }))
+        return ps.map(async p => await Product.save({ product: p, exchangeId, map: map.object }))
       }
 
-      const ids = Promise.all(loopItems(products))
-      res.json(ids)
+      const ids = await Promise.all(loopItems(products))
+
+      res.status(200).json(ids)
     } catch (err) {
       next(err)
     }

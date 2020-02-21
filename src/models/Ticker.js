@@ -1,4 +1,5 @@
 import moment from 'moment'
+import BuilderQuery from '../utils/BuilderQuery'
 import query from '../utils/query'
 
 const { log, error } = console

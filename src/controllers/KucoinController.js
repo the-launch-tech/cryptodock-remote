@@ -6,7 +6,7 @@ export default class KucoinController {
   static async getCurrencies(req, res, next) {
     try {
       const { data } = await Kucoin.getCurrencies()
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -22,7 +22,7 @@ export default class KucoinController {
 
     try {
       const { data } = await Kucoin.getSymbolsList({ market })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -38,7 +38,7 @@ export default class KucoinController {
 
     try {
       const { data } = await Kucoin.getTicker({ symbol: pair })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -47,7 +47,7 @@ export default class KucoinController {
   static async getAllTickers(req, res, next) {
     try {
       const { data } = await Kucoin.getAllTickers()
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -63,7 +63,7 @@ export default class KucoinController {
 
     try {
       const { data } = await Kucoin.get24HourStats({ symbol: pair })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -72,7 +72,7 @@ export default class KucoinController {
   static async getMarketList(req, res, next) {
     try {
       const { data } = await Kucoin.getMarketList()
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -89,7 +89,7 @@ export default class KucoinController {
 
     try {
       const { data } = await Kucoin.getPartOrderBook({ symbol: pair, depth })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -106,7 +106,7 @@ export default class KucoinController {
 
     try {
       const { data } = await Kucoin.getFullOrderBookAggregated({ symbol: pair, depth })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -122,7 +122,7 @@ export default class KucoinController {
 
     try {
       const { data } = await Kucoin.getFullOrderBookAtomic({ symbol: pair })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -138,7 +138,7 @@ export default class KucoinController {
 
     try {
       const { data } = await Kucoin.getTradeHistories({ symbol: pair })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -160,7 +160,7 @@ export default class KucoinController {
         endAt: end,
         type: granularity,
       })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -177,7 +177,7 @@ export default class KucoinController {
 
     try {
       const { data } = await Kucoin.getCurrencyDetail({ currency, chain })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -194,7 +194,7 @@ export default class KucoinController {
 
     try {
       const { data } = await Kucoin.getFiatPrice({ base, currencies })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }

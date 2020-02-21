@@ -1,9 +1,14 @@
+import BuilderQuery from '../utils/BuilderQuery'
 import query from '../utils/query'
 
 const { log, error } = console
 
 export default class Product {
   static async get({ constraints = [], meta = {}, fields = [], joins = [] }) {
+    constraints = constraints.map(constraint => {
+      return typeof constraint == 'string' ? JSON.parse(constraint) : constraint
+    })
+
     try {
       const Query = new BuilderQuery({
         table: 'products',

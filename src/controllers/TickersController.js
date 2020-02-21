@@ -6,7 +6,7 @@ export default class TickersController {
   static async getTickers(req, res, next) {
     try {
       const data = await Ticker.get(req.query)
-      return data
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -14,7 +14,7 @@ export default class TickersController {
 
   static async saveTickers(req, res, next) {
     const { Errors } = global.config
-    const { tickers, exchangeId, productId, map } = req.body
+    const { tickers, exchangeId, productId, map } = req.body.tickers
 
     if (!tickers || !exchangeId || !productId || !map) {
       return next(Errors.InvalidParameters)
@@ -26,7 +26,7 @@ export default class TickersController {
       }
 
       const ids = Promise.all(loopItems(tickers))
-      res.json(ids)
+      res.status(200).json(ids)
     } catch (err) {
       next(err)
     }

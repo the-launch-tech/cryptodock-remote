@@ -6,7 +6,7 @@ export default class CoinbaseProController {
   static async getProducts(req, res, next) {
     try {
       const data = await CoinbasePro.getProducts()
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -23,7 +23,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.getProductOrderBook(pair, { level: level ? level : 3 })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -39,7 +39,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.getProductTicker(pair)
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -56,7 +56,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.getProductTrades(pair, { after: after ? after : 0 })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -73,7 +73,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.getProductHistoricRates(pair, { granularity, start, end })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -89,7 +89,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.getProduct24HrStats(pair)
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -98,7 +98,7 @@ export default class CoinbaseProController {
   static async getCurrencies(req, res, next) {
     try {
       const data = await CoinbasePro.getCurrencies()
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -107,7 +107,7 @@ export default class CoinbaseProController {
   static async getTime(req, res, next) {
     try {
       const data = await CoinbasePro.getTime()
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -116,7 +116,7 @@ export default class CoinbaseProController {
   static async getCoinbaseAccounts(req, res, next) {
     try {
       const data = await CoinbasePro.getCoinbaseAccounts()
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -125,7 +125,7 @@ export default class CoinbaseProController {
   static async getPaymentMethods(req, res, next) {
     try {
       const data = await CoinbasePro.getPaymentMethods()
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -134,7 +134,7 @@ export default class CoinbaseProController {
   static async getAccounts(req, res, next) {
     try {
       const data = await CoinbasePro.getAccounts()
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -150,7 +150,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.getAccount(accountID)
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -167,7 +167,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.getAccountHistory(accountID, args)
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -184,7 +184,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.getAccountTransfers(accountID, args)
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -201,7 +201,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.getAccountHolds(accountID, args)
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -217,7 +217,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.buy({ price, size, product_id })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -233,7 +233,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.sell({ price, size, product_id })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -249,7 +249,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.placeOrder({ price, size, product_id, side })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -265,7 +265,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.cancelOrder(orderID)
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -274,7 +274,7 @@ export default class CoinbaseProController {
   static async cancelOrders(req, res, next) {
     try {
       const data = await CoinbasePro.cancelOrders()
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -290,7 +290,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.cancelAllOrders(pair)
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -299,7 +299,7 @@ export default class CoinbaseProController {
   static async getOrders(req, res, next) {
     try {
       const data = await CoinbasePro.getOrders(req.params)
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -315,7 +315,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.getOrder(orderID)
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -331,7 +331,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.getFills(pair)
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -340,7 +340,7 @@ export default class CoinbaseProController {
   static async getFundings(req, res, next) {
     try {
       const data = await CoinbasePro.getFundings(pair)
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -356,7 +356,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.repay({ amount, currency })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -372,7 +372,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.marginTransfer({ margin_profile_id, type, amount, currency })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -381,7 +381,7 @@ export default class CoinbaseProController {
   static async closePosition(req, res, next) {
     try {
       const data = await CoinbasePro.closePosition(req.params)
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -397,7 +397,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.convert({ from, to, amount })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -413,7 +413,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.deposit({ amount, currency, coinbase_account_id })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -429,7 +429,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.withdraw({ amount, currency, coinbase_account_id })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -445,7 +445,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.depositCrypto(req.params)
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -461,7 +461,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.withdrawCrypto({ amount, currency, crypto_address })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -477,7 +477,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.depositPayment({ amount, currency, payment_method_id })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -493,7 +493,7 @@ export default class CoinbaseProController {
 
     try {
       const data = await CoinbasePro.withdrawPayment({ amount, currency, payment_method_id })
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
@@ -502,7 +502,7 @@ export default class CoinbaseProController {
   static async getTrailingVolume(req, res, next) {
     try {
       const data = await CoinbasePro.getTrailingVolume()
-      res.json(data)
+      res.status(200).json(data)
     } catch (err) {
       next(err)
     }
